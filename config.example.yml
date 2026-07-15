@@ -1,0 +1,37 @@
+# SmallVanillaFlow example configuration
+
+enable_scp_freeze: true
+default_scp_freeze_seconds: 60
+use_player_count_overrides: true
+
+scp_freeze_seconds_by_player_count:
+  5: 75
+  6: 60
+  7: 45
+  8: 40
+
+freeze_capture_delay_seconds: 0.5
+position_tolerance: 0.03
+
+show_countdown_hint: true
+countdown_hint_interval_seconds: 1
+countdown_hint_text: |-
+  <size=32><color=#ff5555>收容程序仍在運作</color>
+  <color=white>解除收容：{seconds} 秒</color></size>
+release_hint_text: |-
+  <size=32><color=#ff5555>收容失效</color>
+  <color=white>你現在可以移動。</color></size>
+release_hint_duration_seconds: 4
+
+enable_starting_tokens: true
+
+# Set = directly set the starting amount.
+# Add = add this amount on top of vanilla.
+starting_token_mode: Set
+
+# -1 = do not change that faction.
+ntf_starting_tokens: 2
+chaos_starting_tokens: 2
+maximum_token_value: 20
+
+enable_debug_logging: false
