@@ -205,7 +205,7 @@ namespace SCPSL_MicroServer_Tweaks
             if (!Config.EnableRoleVoting)
                 return;
 
-            if (args.CommandType != CommandType.ClientConsole)
+            if (args.CommandType != CommandType.Client)
                 return;
 
             if (args.CommandName == null)
@@ -239,9 +239,12 @@ namespace SCPSL_MicroServer_Tweaks
             if (role == null)
                 return;
 
-            Player player = Player.Get(args.Sender);
+            Player player = Player.Get(args.Sender.SenderId);
             if (player == null)
+            {
+                Debug("Failed to resolve CommandSender to Player");
                 return;
+            }
 
             bool voted = VotingController.TryVote(player, role.Value);
             if (voted)

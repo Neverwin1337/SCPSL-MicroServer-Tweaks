@@ -23,8 +23,6 @@ namespace SCPSL_MicroServer_Tweaks
         private bool _active;
         private bool _assignmentsReady;
         private float _lobbyTimerSetAt;
-        private float _earlyEndTimerStart;
-        private float _nextHintAt;
 
         public bool IsActive => _active;
         public IReadOnlyDictionary<RoleTypeId, int> VoteCounts => _voteCounts;
@@ -46,23 +44,7 @@ namespace SCPSL_MicroServer_Tweaks
             _assignments.Clear();
             _active = true;
             _assignmentsReady = false;
-            _earlyEndTimerStart = 0;
-            _nextHintAt = 0;
             _lobbyTimerSetAt = Time.realtimeSinceStartup;
-
-            try
-            {
-                if (GameCore.RoundStart.singleton != null)
-                {
-                    GameCore.RoundStart.singleton.NetworkRoundStartTime =
-                        _lobbyTimerSetAt + _plugin.Config.LobbyTimerSeconds;
-                }
-            }
-            catch (Exception ex)
-            {
-                _plugin.Debug("Failed to set lobby timer: " + ex.Message);
-            }
-
             SendVoteHints();
         }
 
@@ -74,7 +56,6 @@ namespace SCPSL_MicroServer_Tweaks
             _votes[player] = role;
             RecalculateCounts();
             SendVoteHints();
-            CheckEarlyEnd();
             return true;
         }
 
@@ -192,39 +173,10 @@ namespace SCPSL_MicroServer_Tweaks
         private void RecalculateCounts()
         {
             _voteCounts.Clear();
-            Dictionary<RoleTypeId, int> counts = _voteCounts;
             foreach (RoleTypeId role in _votes.Values)
             {
-                counts.TryGetValue(role, out int cnt);
-                counts[role] = cnt + 1;
-            }
-        }
-
-        private void CheckEarlyEnd()
-        {
-            if (_earlyEndTimerStart > 0)
-                return;
-
-            int total = TotalPlayers;
-            if (total == 0)
-                return;
-
-            float ratio = (float)TotalVoters / total;
-            if (ratio >= _plugin.Config.VotingEarlyEndThreshold)
-            {
-                _earlyEndTimerStart = Time.realtimeSinceStartup;
-                try
-                {
-                    if (GameCore.RoundStart.singleton != null)
-                    {
-                        GameCore.RoundStart.singleton.NetworkRoundStartTime =
-                            Time.realtimeSinceStartup + _plugin.Config.VotingEarlyEndCountdown;
-                    }
-                }
-                catch (Exception ex)
-                {
-                    _plugin.Debug("Failed to shorten lobby timer: " + ex.Message);
-                }
+                _voteCounts.TryGetValue(role, out int cnt);
+                _voteCounts[role] = cnt + 1;
             }
         }
     }
