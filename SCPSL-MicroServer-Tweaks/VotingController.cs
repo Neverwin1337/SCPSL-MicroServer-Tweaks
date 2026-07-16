@@ -49,18 +49,7 @@ namespace SCPSL_MicroServer_Tweaks
             _earlyEndTimerStart = 0;
             _lobbyTimerSetAt = Time.realtimeSinceStartup;
 
-            try
-            {
-                if (GameCore.RoundStart.singleton != null)
-                {
-                    GameCore.RoundStart.singleton.NetworkRoundStartTime =
-                        _lobbyTimerSetAt + _plugin.Config.LobbyTimerSeconds;
-                }
-            }
-            catch (Exception ex)
-            {
-                _plugin.Debug("Set lobby timer failed: " + ex.Message);
-            }
+            SetLobbyTimer(_plugin.Config.LobbyTimerSeconds);
 
             SendVoteHints();
         }
@@ -198,6 +187,19 @@ namespace SCPSL_MicroServer_Tweaks
             }
         }
 
+        private void SetLobbyTimer(float seconds)
+        {
+            try
+            {
+                if (RoundStart.singleton != null)
+                    RoundStart.singleton.NetworkRoundStartTime = Time.realtimeSinceStartup + seconds;
+            }
+            catch (Exception ex)
+            {
+                _plugin.Debug("SetLobbyTimer failed: " + ex.Message);
+            }
+        }
+
         private void CheckEarlyEnd()
         {
             if (_earlyEndTimerStart > 0)
@@ -207,22 +209,10 @@ namespace SCPSL_MicroServer_Tweaks
             if (total == 0)
                 return;
 
-            float ratio = (float)TotalVoters / total;
-            if (ratio >= _plugin.Config.VotingEarlyEndThreshold)
+            if ((float)TotalVoters / total >= _plugin.Config.VotingEarlyEndThreshold)
             {
                 _earlyEndTimerStart = Time.realtimeSinceStartup;
-                try
-                {
-                    if (GameCore.RoundStart.singleton != null)
-                    {
-                        GameCore.RoundStart.singleton.NetworkRoundStartTime =
-                            Time.realtimeSinceStartup + _plugin.Config.VotingEarlyEndCountdown;
-                    }
-                }
-                catch (Exception ex)
-                {
-                    _plugin.Debug("Shorten lobby timer failed: " + ex.Message);
-                }
+                SetLobbyTimer(_plugin.Config.VotingEarlyEndCountdown);
             }
         }
     }
