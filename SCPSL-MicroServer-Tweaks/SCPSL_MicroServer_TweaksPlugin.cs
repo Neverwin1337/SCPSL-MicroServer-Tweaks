@@ -1,8 +1,11 @@
 using System;
+using LabApi.Events.Arguments.ServerEvents;
 using LabApi.Events.CustomHandlers;
+using LabApi.Events.Handlers;
 using LabApi.Features;
 using LabApi.Features.Console;
 using Logger = LabApi.Features.Console.Logger;	
+using LabApi.Features.Enums;
 using LabApi.Features.Wrappers;
 using LabApi.Loader.Features.Plugins;
 using PlayerRoles;
@@ -56,6 +59,8 @@ namespace SCPSL_MicroServer_Tweaks
 
             VotingController = new VotingController(this);
 
+            ServerEvents.CommandExecuting += OnCommandExecuting;
+
             _eventHandlers = new EventHandlers(this);
             CustomHandlersManager.RegisterEventsHandler(_eventHandlers);
 
@@ -64,6 +69,8 @@ namespace SCPSL_MicroServer_Tweaks
 
         public override void Disable()
         {
+            ServerEvents.CommandExecuting -= OnCommandExecuting;
+
             if (_eventHandlers != null)
                 CustomHandlersManager.UnregisterEventsHandler(_eventHandlers);
 
@@ -191,6 +198,57 @@ namespace SCPSL_MicroServer_Tweaks
                 result = Config.MaximumTokenValue;
 
             return result;
+        }
+
+        private void OnCommandExecuting(CommandExecutingEventArgs args)
+        {
+            if (!Config.EnableRoleVoting)
+                return;
+
+            if (args.CommandType != CommandType.ClientConsole)
+                return;
+
+            if (args.CommandName == null)
+                return;
+
+            string cmd = args.CommandName.ToLowerInvariant();
+
+            // Handle .1 .2 .3 .4
+            RoleTypeId? role = cmd switch
+            {
+                "1" or "scp" => RoleTypeId.Scp049,
+                "2" or "sci" or "scientist" => RoleTypeId.Scientist,
+                "3" or "d" or "classd" => RoleTypeId.ClassD,
+                "4" or "guard" or "g" => RoleTypeId.FacilityGuard,
+                _ => null
+            };
+
+            if (role == null && cmd == "vote" && args.Arguments.Count > 0)
+            {
+                string arg = args.Arguments.At(0).ToLowerInvariant();
+                role = arg switch
+                {
+                    "1" or "scp" => RoleTypeId.Scp049,
+                    "2" or "sci" or "scientist" => RoleTypeId.Scientist,
+                    "3" or "d" or "classd" => RoleTypeId.ClassD,
+                    "4" or "guard" or "g" => RoleTypeId.FacilityGuard,
+                    _ => null
+                };
+            }
+
+            if (role == null)
+                return;
+
+            Player player = Player.Get(args.Sender);
+            if (player == null)
+                return;
+
+            bool voted = VotingController.TryVote(player, role.Value);
+            if (voted)
+            {
+                args.IsAllowed = false; // consume command, silence "not found"
+                player.SendConsoleMessage($"Voted for {role.Value}!", "green");
+            }
         }
     }
 }

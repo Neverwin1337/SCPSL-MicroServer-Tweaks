@@ -44,8 +44,8 @@ function Copy-RequiredAssembly {
 }
 
 Copy-RequiredAssembly @("Assembly-CSharp.dll") "Assembly-CSharp.dll"
-Copy-RequiredAssembly @("Assembly-CSharp-firstpass.dll") "Assembly-CSharp-firstpass.dll"
 Copy-RequiredAssembly @("LabApi.dll", "LabAPI.dll") "LabApi.dll"
+Copy-RequiredAssembly @("UnityEngine.CoreModule.dll") "UnityEngine.CoreModule.dll"
 Copy-RequiredAssembly @("UnityEngine.CoreModule.dll") "UnityEngine.CoreModule.dll"
 
 Write-Host "Building SCPSL-MicroServer-Tweaks..."
