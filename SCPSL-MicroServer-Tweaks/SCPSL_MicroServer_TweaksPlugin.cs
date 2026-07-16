@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using LabApi.Events.CustomHandlers;
 using LabApi.Features;
 using LabApi.Features.Console;
@@ -11,18 +11,18 @@ using Respawning.Waves;
 using Respawning.Waves.Generic;
 using UnityEngine;
 
-namespace SmallVanillaFlow
+namespace SCPSL_MicroServer_Tweaks
 {
-    public sealed class SmallVanillaFlowPlugin : Plugin<PluginConfig>
+    public sealed class SCPSL_MicroServer_TweaksPlugin : Plugin<PluginConfig>
     {
         private EventHandlers _eventHandlers;
         private GameObject _controllerObject;
 
-        public static SmallVanillaFlowPlugin Instance { get; private set; }
+        public static SCPSL_MicroServer_TweaksPlugin Instance { get; private set; }
 
-        public override string Name { get; } = "SmallVanillaFlow";
+        public override string Name { get; } = "SCPSL-MicroServer-Tweaks";
         public override string Description { get; } =
-            "Freezes initial SCP movement briefly and configures starting NTF/Chaos Respawn Tokens.";
+            "Freezes initial SCP movement briefly, configures starting NTF/Chaos Respawn Tokens, and enables lobby role voting.";
         public override string Author { get; } = "Custom Server";
         public override Version Version { get; } = new Version(1, 0, 0);
         public override Version RequiredApiVersion { get; } =
@@ -35,28 +35,33 @@ namespace SmallVanillaFlow
         }
 
         internal FreezeController FreezeController { get; private set; }
+        internal VotingController VotingController { get; private set; }
+        internal VotingUI VotingUI { get; private set; }
 
         public override void Enable()
         {
             string validationError;
             if (!Config.Validate(out validationError))
             {
-                Logger.Error("[SmallVanillaFlow] Invalid configuration: " + validationError);
+                Logger.Error("[SCPSL-MicroServer-Tweaks] Invalid configuration: " + validationError);
                 return;
             }
 
             Instance = this;
 
-            _controllerObject = new GameObject("SmallVanillaFlow.Controller");
+            _controllerObject = new GameObject("SCPSL_MicroServer_Tweaks.Controller");
             UnityEngine.Object.DontDestroyOnLoad(_controllerObject);
 
             FreezeController = _controllerObject.AddComponent<FreezeController>();
             FreezeController.Initialize(this);
 
+            VotingController = new VotingController(this);
+            VotingUI = new VotingUI(VotingController);
+
             _eventHandlers = new EventHandlers(this);
             CustomHandlersManager.RegisterEventsHandler(_eventHandlers);
 
-            Logger.Info("[SmallVanillaFlow] Enabled.");
+            Logger.Info("[SCPSL-MicroServer-Tweaks] Enabled.");
         }
 
         public override void Disable()
@@ -67,15 +72,20 @@ namespace SmallVanillaFlow
             if (FreezeController != null)
                 FreezeController.CancelFreeze(false);
 
+            if (VotingUI != null)
+                VotingUI.Hide();
+
             if (_controllerObject != null)
                 UnityEngine.Object.Destroy(_controllerObject);
 
             _eventHandlers = null;
             FreezeController = null;
+            VotingController = null;
+            VotingUI = null;
             _controllerObject = null;
             Instance = null;
 
-            Logger.Info("[SmallVanillaFlow] Disabled.");
+            Logger.Info("[SCPSL-MicroServer-Tweaks] Disabled.");
         }
 
         internal void ApplyStartingTokens()
@@ -146,14 +156,14 @@ namespace SmallVanillaFlow
             }
             catch (Exception exception)
             {
-                Logger.Error("[SmallVanillaFlow] Failed to apply starting Respawn Tokens:\n" + exception);
+                Logger.Error("[SCPSL-MicroServer-Tweaks] Failed to apply starting Respawn Tokens:\n" + exception);
             }
         }
 
         internal void Debug(string message)
         {
             if (Config.EnableDebugLogging)
-                Logger.Debug("[SmallVanillaFlow] " + message);
+                Logger.Debug("[SCPSL-MicroServer-Tweaks] " + message);
         }
 
         private int GetConfiguredTokens(Faction faction)

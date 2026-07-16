@@ -42,7 +42,7 @@ fi
 
 ROOT="$(cd "$(dirname "$0")" && pwd)"
 BIN_DIR="$ROOT/Binaries"
-PROJECT_FILE="$ROOT/SmallVanillaFlow/SmallVanillaFlow.csproj"
+PROJECT_FILE="$ROOT/SCPSL-MicroServer-Tweaks/SCPSL-MicroServer-Tweaks.csproj"
 
 # Resolve the Managed directory.
 if [[ -d "$SERVER_PATH/SCPSL_Data/Managed" ]]; then
@@ -72,11 +72,13 @@ copy_required() {
 copy_required "Assembly-CSharp.dll"        "Assembly-CSharp.dll"
 copy_required "LabApi.dll"                "LabApi.dll" "LabAPI.dll"
 copy_required "UnityEngine.CoreModule.dll" "UnityEngine.CoreModule.dll"
+copy_required "UnityEngine.UIElementsModule.dll" "UnityEngine.UIElementsModule.dll"
+copy_required "UnityEngine.TextRenderingModule.dll" "UnityEngine.TextRenderingModule.dll"
 
 echo "Building SCPSL-MicroServer-Tweaks..."
 dotnet build "$PROJECT_FILE" -c Release
 
-OUTPUT_DLL="$ROOT/SmallVanillaFlow/bin/Release/net48/SmallVanillaFlow.dll"
+OUTPUT_DLL="$ROOT/SCPSL-MicroServer-Tweaks/bin/Release/net48/SCPSL_MicroServer_Tweaks.dll"
 if [[ ! -f "$OUTPUT_DLL" ]]; then
     echo "Error: build completed but output DLL was not found: $OUTPUT_DLL" >&2
     exit 1
@@ -87,7 +89,7 @@ echo "Built: $OUTPUT_DLL"
 
 if [[ "$DEPLOY" -eq 1 ]]; then
     mkdir -p "$PLUGIN_DIR"
-    cp -f "$OUTPUT_DLL" "$PLUGIN_DIR/SmallVanillaFlow.dll"
+    cp -f "$OUTPUT_DLL" "$PLUGIN_DIR/SCPSL_MicroServer_Tweaks.dll"
     echo "Deployed to: $PLUGIN_DIR"
 fi
 

@@ -2,7 +2,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.0.31903.59
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SmallVanillaFlow", "SmallVanillaFlow\SmallVanillaFlow.csproj", "{3AC8C729-94E2-4F67-B6D6-E19036B91F47}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SCPSL-MicroServer-Tweaks", "SCPSL-MicroServer-Tweaks\SCPSL-MicroServer-Tweaks.csproj", "{3AC8C729-94E2-4F67-B6D6-E19036B91F47}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

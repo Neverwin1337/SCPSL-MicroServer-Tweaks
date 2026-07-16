@@ -1,11 +1,11 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFramework>net48</TargetFramework>
     <LangVersion>10.0</LangVersion>
     <Nullable>disable</Nullable>
     <ImplicitUsings>disable</ImplicitUsings>
-    <RootNamespace>SmallVanillaFlow</RootNamespace>
-    <AssemblyName>SmallVanillaFlow</AssemblyName>
+    <RootNamespace>SCPSL_MicroServer_Tweaks</RootNamespace>
+    <AssemblyName>SCPSL_MicroServer_Tweaks</AssemblyName>
     <OutputType>Library</OutputType>
     <PlatformTarget>x64</PlatformTarget>
     <Prefer32Bit>false</Prefer32Bit>
@@ -23,6 +23,14 @@
     </Reference>
     <Reference Include="UnityEngine.CoreModule">
       <HintPath>..\Binaries\UnityEngine.CoreModule.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="UnityEngine.UIElementsModule">
+      <HintPath>..\Binaries\UnityEngine.UIElementsModule.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="UnityEngine.TextRenderingModule">
+      <HintPath>..\Binaries\UnityEngine.TextRenderingModule.dll</HintPath>
       <Private>false</Private>
     </Reference>
   </ItemGroup>

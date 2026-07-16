@@ -1,20 +1,17 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using LabApi.Features.Wrappers;
 using PlayerRoles;
 using UnityEngine;
 
-namespace SmallVanillaFlow
+namespace SCPSL_MicroServer_Tweaks
 {
-    /// <summary>
-    /// Unity main-thread controller. This intentionally avoids MEC and EXILED dependencies.
-    /// </summary>
     public sealed class FreezeController : MonoBehaviour
     {
         private readonly Dictionary<Player, Vector3> _anchors = new Dictionary<Player, Vector3>();
 
-        private SmallVanillaFlowPlugin _plugin;
+        private SCPSL_MicroServer_TweaksPlugin _plugin;
         private bool _pendingCapture;
         private bool _active;
         private float _captureAt;
@@ -23,7 +20,7 @@ namespace SmallVanillaFlow
         private float _plannedDuration;
         private int _roundPlayerCount;
 
-        public void Initialize(SmallVanillaFlowPlugin plugin)
+        public void Initialize(SCPSL_MicroServer_TweaksPlugin plugin)
         {
             _plugin = plugin;
         }
@@ -132,7 +129,6 @@ namespace SmallVanillaFlow
             float tolerance = _plugin.Config.PositionTolerance;
             float toleranceSquared = tolerance * tolerance;
 
-            // Copy the keys because players may disconnect or change roles during this loop.
             List<Player> players = new List<Player>(_anchors.Keys);
 
             foreach (Player player in players)

@@ -1,7 +1,7 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.ComponentModel;
 
-namespace SmallVanillaFlow
+namespace SCPSL_MicroServer_Tweaks
 {
     public sealed class PluginConfig
     {
@@ -66,6 +66,21 @@ namespace SmallVanillaFlow
 
         [Description("Print additional diagnostic messages to the server console.")]
         public bool EnableDebugLogging { get; set; } = false;
+
+        [Description("Whether players can vote for their initial role in the lobby.")]
+        public bool EnableRoleVoting { get; set; } = true;
+
+        [Description("How many seconds voting lasts in the lobby.")]
+        public float VotingTimeSeconds { get; set; } = 45f;
+
+        [Description("Lobby timer value when voting is active. Gives players time to vote before the round starts.")]
+        public float LobbyTimerSeconds { get; set; } = 60f;
+
+        [Description("Fraction of players (0.0–1.0) that must vote before the lobby timer is shortened to the early-end countdown.")]
+        public float VotingEarlyEndThreshold { get; set; } = 0.75f;
+
+        [Description("Countdown in seconds after the early-end threshold is met.")]
+        public float VotingEarlyEndCountdown { get; set; } = 10f;
 
         public float GetScpFreezeSeconds(int readyPlayerCount)
         {
@@ -134,6 +149,33 @@ namespace SmallVanillaFlow
                         error = "ScpFreezeSecondsByPlayerCount keys must be >= 1 and values cannot be negative.";
                         return false;
                     }
+                }
+            }
+
+            if (EnableRoleVoting)
+            {
+                if (VotingTimeSeconds < 10f)
+                {
+                    error = "VotingTimeSeconds must be at least 10.";
+                    return false;
+                }
+
+                if (LobbyTimerSeconds < VotingTimeSeconds + 5f)
+                {
+                    error = "LobbyTimerSeconds must be at least VotingTimeSeconds + 5.";
+                    return false;
+                }
+
+                if (VotingEarlyEndThreshold < 0f || VotingEarlyEndThreshold > 1f)
+                {
+                    error = "VotingEarlyEndThreshold must be between 0 and 1.";
+                    return false;
+                }
+
+                if (VotingEarlyEndCountdown < 3f)
+                {
+                    error = "VotingEarlyEndCountdown must be at least 3.";
+                    return false;
                 }
             }
 

@@ -11,7 +11,7 @@ $ErrorActionPreference = "Stop"
 
 $Root = Split-Path -Parent $MyInvocation.MyCommand.Path
 $BinaryDirectory = Join-Path $Root "Binaries"
-$ProjectFile = Join-Path $Root "SmallVanillaFlow\SmallVanillaFlow.csproj"
+$ProjectFile = Join-Path $Root "SCPSL-MicroServer-Tweaks\SCPSL-MicroServer-Tweaks.csproj"
 
 if (Test-Path (Join-Path $ServerPath "SCPSL_Data\Managed")) {
     $ManagedDirectory = Join-Path $ServerPath "SCPSL_Data\Managed"
@@ -46,15 +46,17 @@ function Copy-RequiredAssembly {
 Copy-RequiredAssembly @("Assembly-CSharp.dll") "Assembly-CSharp.dll"
 Copy-RequiredAssembly @("LabApi.dll", "LabAPI.dll") "LabApi.dll"
 Copy-RequiredAssembly @("UnityEngine.CoreModule.dll") "UnityEngine.CoreModule.dll"
+Copy-RequiredAssembly @("UnityEngine.UIElementsModule.dll") "UnityEngine.UIElementsModule.dll"
+Copy-RequiredAssembly @("UnityEngine.TextRenderingModule.dll") "UnityEngine.TextRenderingModule.dll"
 
-Write-Host "Building SmallVanillaFlow..."
+Write-Host "Building SCPSL-MicroServer-Tweaks..."
 dotnet build $ProjectFile -c Release
 
 if ($LASTEXITCODE -ne 0) {
     throw "Build failed."
 }
 
-$OutputDll = Join-Path $Root "SmallVanillaFlow\bin\Release\net48\SmallVanillaFlow.dll"
+$OutputDll = Join-Path $Root "SCPSL-MicroServer-Tweaks\bin\Release\net48\SCPSL_MicroServer_Tweaks.dll"
 
 if (!(Test-Path $OutputDll)) {
     throw "Build completed but output DLL was not found: $OutputDll"
@@ -65,7 +67,7 @@ Write-Host "Built: $OutputDll"
 
 if ($Deploy) {
     New-Item -ItemType Directory -Force -Path $PluginDirectory | Out-Null
-    Copy-Item $OutputDll (Join-Path $PluginDirectory "SmallVanillaFlow.dll") -Force
+    Copy-Item $OutputDll (Join-Path $PluginDirectory "SCPSL_MicroServer_Tweaks.dll") -Force
     Write-Host "Deployed to: $PluginDirectory"
 }
 

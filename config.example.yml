@@ -1,4 +1,4 @@
-# SmallVanillaFlow example configuration
+# SCPSL-MicroServer-Tweaks example configuration
 
 enable_scp_freeze: true
 default_scp_freeze_seconds: 60
@@ -35,3 +35,10 @@ chaos_starting_tokens: 2
 maximum_token_value: 20
 
 enable_debug_logging: false
+
+# Role Voting
+enable_role_voting: true
+voting_time_seconds: 45
+lobby_timer_seconds: 60
+voting_early_end_threshold: 0.75
+voting_early_end_countdown: 10
