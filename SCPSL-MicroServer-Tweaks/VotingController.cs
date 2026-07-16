@@ -9,6 +9,13 @@ namespace SCPSL_MicroServer_Tweaks
 {
     public sealed class VotingController
     {
+        internal static readonly (RoleTypeId role, string shortName, string displayName)[] Roles = {
+            (RoleTypeId.Scp049, "SCP", "SCP"),
+            (RoleTypeId.Scientist, "Scientists", "科學家"),
+            (RoleTypeId.ClassD, "ClassD", "D級人員"),
+            (RoleTypeId.FacilityGuard, "Guard", "安保人員"),
+        };
+
         private readonly SCPSL_MicroServer_TweaksPlugin _plugin;
         private readonly Dictionary<Player, RoleTypeId> _votes = new Dictionary<Player, RoleTypeId>();
         private readonly Dictionary<RoleTypeId, int> _voteCounts = new Dictionary<RoleTypeId, int>();
@@ -17,13 +24,15 @@ namespace SCPSL_MicroServer_Tweaks
         private bool _assignmentsReady;
         private float _lobbyTimerSetAt;
         private float _earlyEndTimerStart;
+        private float _nextHintAt;
 
         public bool IsActive => _active;
         public IReadOnlyDictionary<RoleTypeId, int> VoteCounts => _voteCounts;
         public int TotalVoters => _votes.Count;
         public int TotalPlayers => Player.ReadyList.Count();
-        public float TimeRemaining => _active ? Math.Max(0, _plugin.Config.VotingTimeSeconds - (Time.realtimeSinceStartup - _lobbyTimerSetAt)) : 0;
-        public bool IsEarlyEndTriggered => _earlyEndTimerStart > 0;
+        public float TimeRemaining => _active
+            ? Math.Max(0, _plugin.Config.VotingTimeSeconds - (Time.realtimeSinceStartup - _lobbyTimerSetAt))
+            : 0;
 
         public VotingController(SCPSL_MicroServer_TweaksPlugin plugin)
         {
@@ -38,15 +47,23 @@ namespace SCPSL_MicroServer_Tweaks
             _active = true;
             _assignmentsReady = false;
             _earlyEndTimerStart = 0;
+            _nextHintAt = 0;
             _lobbyTimerSetAt = Time.realtimeSinceStartup;
 
-            if (GameCore.RoundStart.singleton != null)
+            try
             {
-                GameCore.RoundStart.singleton.NetworkRoundStartTime = _lobbyTimerSetAt + _plugin.Config.LobbyTimerSeconds;
+                if (GameCore.RoundStart.singleton != null)
+                {
+                    GameCore.RoundStart.singleton.NetworkRoundStartTime =
+                        _lobbyTimerSetAt + _plugin.Config.LobbyTimerSeconds;
+                }
+            }
+            catch (Exception ex)
+            {
+                _plugin.Debug("Failed to set lobby timer: " + ex.Message);
             }
 
-            _plugin.VotingUI.Show();
-            _plugin.Debug("Voting started.");
+            SendVoteHints();
         }
 
         public bool TryVote(Player player, RoleTypeId role)
@@ -56,7 +73,7 @@ namespace SCPSL_MicroServer_Tweaks
 
             _votes[player] = role;
             RecalculateCounts();
-            _plugin.VotingUI.UpdateDisplay();
+            SendVoteHints();
             CheckEarlyEnd();
             return true;
         }
@@ -68,7 +85,6 @@ namespace SCPSL_MicroServer_Tweaks
 
             _assignmentsReady = true;
             _active = false;
-            _plugin.VotingUI.Hide();
 
             List<Player> players = Player.ReadyList.ToList();
             if (players.Count == 0)
@@ -76,38 +92,29 @@ namespace SCPSL_MicroServer_Tweaks
 
             int scpSlots = GetDefaultScpSlotCount(players.Count);
 
-            List<Player> scpVoters = players.Where(p => _votes.TryGetValue(p, out RoleTypeId r) && IsScpVote(r)).ToList();
+            List<Player> scpVoters = players
+                .Where(p => _votes.TryGetValue(p, out RoleTypeId r) && r == RoleTypeId.Scp049)
+                .ToList();
 
             scpVoters.Shuffle();
-            HashSet<Player> assignedScps = new HashSet<Player>(scpVoters.Take(scpSlots));
-            foreach (Player p in assignedScps)
+            foreach (Player p in scpVoters.Take(scpSlots))
             {
                 RoleTypeId actualScp = PickRandomScp();
                 _assignments[p] = actualScp;
-                _plugin.Debug($"Assigned {p.Nickname} -> {actualScp} (SCP vote)");
             }
 
             List<Player> remaining = players.Where(p => !_assignments.ContainsKey(p)).ToList();
             remaining.Shuffle();
 
-            List<Player> votersForClassD = remaining.Where(p => _votes.TryGetValue(p, out RoleTypeId r) && r == RoleTypeId.ClassD).ToList();
-            List<Player> votersForGuard = remaining.Where(p => _votes.TryGetValue(p, out RoleTypeId r) && r == RoleTypeId.FacilityGuard).ToList();
-            List<Player> votersForScientist = remaining.Where(p => _votes.TryGetValue(p, out RoleTypeId r) && r == RoleTypeId.Scientist).ToList();
-            List<Player> noVote = remaining.Where(p => !_votes.ContainsKey(p)).ToList();
-
-            AssignRemaining(votersForClassD, RoleTypeId.ClassD);
-            AssignRemaining(votersForGuard, RoleTypeId.FacilityGuard);
-            AssignRemaining(votersForScientist, RoleTypeId.Scientist);
-            AssignRemaining(noVote, RoleTypeId.ClassD);
-
-            void AssignRemaining(List<Player> pool, RoleTypeId preferred)
+            foreach (Player p in remaining)
             {
-                foreach (Player p in pool)
+                if (_votes.TryGetValue(p, out RoleTypeId voted) && voted != RoleTypeId.Scp049)
                 {
-                    if (_assignments.ContainsKey(p))
-                        continue;
-                    _assignments[p] = preferred;
-                    _plugin.Debug($"Assigned {p.Nickname} -> {preferred}");
+                    _assignments[p] = voted;
+                }
+                else
+                {
+                    _assignments[p] = RoleTypeId.ClassD;
                 }
             }
         }
@@ -125,9 +132,41 @@ namespace SCPSL_MicroServer_Tweaks
             _active = false;
         }
 
-        private bool IsScpVote(RoleTypeId role)
+        private void SendVoteHints()
         {
-            return role == RoleTypeId.Scp049;
+            int remaining = (int)Math.Ceiling(TimeRemaining);
+            string header = string.Format(
+                "<size=28><color=#ffaa00>身份投票 - 剩餘 {0}s ({1}/{2} 已投票)</color></size>",
+                remaining, TotalVoters, TotalPlayers);
+
+            string body = "\n<size=22>";
+            foreach (var (role, _, displayName) in Roles)
+            {
+                _voteCounts.TryGetValue(role, out int count);
+                body += string.Format("<color={0}>{1}: {2} 票</color>\n",
+                    GetRoleColor(role), displayName, count);
+            }
+            body += "</size>";
+            body += "\n<size=16><color=#cccccc>在控制台輸入 .1 .2 .3 .4 投票</color></size>";
+
+            string fullHint = header + body;
+
+            foreach (Player player in Player.ReadyList)
+            {
+                player.SendHint(fullHint, 3f);
+            }
+        }
+
+        private static string GetRoleColor(RoleTypeId role)
+        {
+            return role switch
+            {
+                RoleTypeId.Scp049 => "#ff5555",
+                RoleTypeId.Scientist => "#55aaff",
+                RoleTypeId.ClassD => "#ffaa55",
+                RoleTypeId.FacilityGuard => "#55ff88",
+                _ => "#ffffff"
+            };
         }
 
         private RoleTypeId PickRandomScp()
@@ -153,10 +192,11 @@ namespace SCPSL_MicroServer_Tweaks
         private void RecalculateCounts()
         {
             _voteCounts.Clear();
+            Dictionary<RoleTypeId, int> counts = _voteCounts;
             foreach (RoleTypeId role in _votes.Values)
             {
-                _voteCounts.TryGetValue(role, out int count);
-                _voteCounts[role] = count + 1;
+                counts.TryGetValue(role, out int cnt);
+                counts[role] = cnt + 1;
             }
         }
 
@@ -165,19 +205,26 @@ namespace SCPSL_MicroServer_Tweaks
             if (_earlyEndTimerStart > 0)
                 return;
 
-            float threshold = _plugin.Config.VotingEarlyEndThreshold;
-            if (TotalPlayers == 0)
+            int total = TotalPlayers;
+            if (total == 0)
                 return;
 
-            float ratio = (float)TotalVoters / TotalPlayers;
-            if (ratio >= threshold)
+            float ratio = (float)TotalVoters / total;
+            if (ratio >= _plugin.Config.VotingEarlyEndThreshold)
             {
                 _earlyEndTimerStart = Time.realtimeSinceStartup;
-                if (GameCore.RoundStart.singleton != null)
+                try
                 {
-                    GameCore.RoundStart.singleton.NetworkRoundStartTime = Time.realtimeSinceStartup + _plugin.Config.VotingEarlyEndCountdown;
+                    if (GameCore.RoundStart.singleton != null)
+                    {
+                        GameCore.RoundStart.singleton.NetworkRoundStartTime =
+                            Time.realtimeSinceStartup + _plugin.Config.VotingEarlyEndCountdown;
+                    }
                 }
-                _plugin.Debug("Early-end threshold reached. Shortening lobby timer.");
+                catch (Exception ex)
+                {
+                    _plugin.Debug("Failed to shorten lobby timer: " + ex.Message);
+                }
             }
         }
     }

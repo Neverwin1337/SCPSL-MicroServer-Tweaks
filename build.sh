@@ -72,8 +72,6 @@ copy_required() {
 copy_required "Assembly-CSharp.dll"        "Assembly-CSharp.dll"
 copy_required "LabApi.dll"                "LabApi.dll" "LabAPI.dll"
 copy_required "UnityEngine.CoreModule.dll" "UnityEngine.CoreModule.dll"
-copy_required "UnityEngine.UIElementsModule.dll" "UnityEngine.UIElementsModule.dll"
-copy_required "UnityEngine.TextRenderingModule.dll" "UnityEngine.TextRenderingModule.dll"
 
 echo "Building SCPSL-MicroServer-Tweaks..."
 dotnet build "$PROJECT_FILE" -c Release

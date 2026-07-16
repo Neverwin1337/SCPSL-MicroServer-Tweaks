@@ -41,7 +41,9 @@ namespace SCPSL_MicroServer_Tweaks
             RoleTypeId assignedRole = _plugin.VotingController.GetAssignedRole(args.Player);
             if (assignedRole != args.NewRole)
             {
-                _plugin.Debug($"Intercepted role: {args.Player.Nickname} {args.NewRole} -> {assignedRole}");
+                _plugin.Debug(string.Format(
+                    "Intercepted role: {0} {1} -> {2}",
+                    args.Player.Nickname, args.NewRole, assignedRole));
                 args.NewRole = assignedRole;
             }
         }

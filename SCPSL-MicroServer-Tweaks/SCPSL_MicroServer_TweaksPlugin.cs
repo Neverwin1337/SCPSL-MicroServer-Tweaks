@@ -36,7 +36,6 @@ namespace SCPSL_MicroServer_Tweaks
 
         internal FreezeController FreezeController { get; private set; }
         internal VotingController VotingController { get; private set; }
-        internal VotingUI VotingUI { get; private set; }
 
         public override void Enable()
         {
@@ -56,7 +55,6 @@ namespace SCPSL_MicroServer_Tweaks
             FreezeController.Initialize(this);
 
             VotingController = new VotingController(this);
-            VotingUI = new VotingUI(VotingController);
 
             _eventHandlers = new EventHandlers(this);
             CustomHandlersManager.RegisterEventsHandler(_eventHandlers);
@@ -72,16 +70,12 @@ namespace SCPSL_MicroServer_Tweaks
             if (FreezeController != null)
                 FreezeController.CancelFreeze(false);
 
-            if (VotingUI != null)
-                VotingUI.Hide();
-
             if (_controllerObject != null)
                 UnityEngine.Object.Destroy(_controllerObject);
 
             _eventHandlers = null;
             FreezeController = null;
             VotingController = null;
-            VotingUI = null;
             _controllerObject = null;
             Instance = null;
 
