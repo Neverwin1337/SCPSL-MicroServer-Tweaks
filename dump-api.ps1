@@ -1,78 +1,115 @@
-# Run on Windows PowerShell in project root. Paste ALL output back.
-# powershell -ExecutionPolicy Bypass -File "dump-api.ps1" > api-dump.txt
-
+# Run on Windows: powershell -ExecutionPolicy Bypass -File "dump-api.ps1"
 $ErrorActionPreference = "Continue"
 $binDir = "$PSScriptRoot\Binaries"
 
-function Dump-All($dll) {
-    $path = "$binDir\$dll"
-    if (!(Test-Path $path)) { 
-        "=== $dll NOT FOUND ==="
-        return 
+function Find-Type($asm, $name) {
+    $t = $asm.GetExportedTypes() | Where-Object { $_.FullName -eq $name -or $_.Name -eq $name }
+    if ($t) { return $t } else { return $null }
+}
+
+# Load LabApi
+$labapi = [System.Reflection.Assembly]::LoadFrom("$binDir\LabApi.dll")
+Write-Host "=== LabApi.dll loaded ===" -ForegroundColor Green
+
+# 1. CommandType enum values
+$cmdType = Find-Type $labapi "LabApi.Features.Enums.CommandType"
+if ($cmdType) {
+    Write-Host "`n--- CommandType enum ---" -ForegroundColor Yellow
+    [System.Enum]::GetNames($cmdType) | ForEach-Object { Write-Host "  $_" }
+}
+
+# 2. Player.Get overloads  
+$playerType = Find-Type $labapi "LabApi.Features.Wrappers.Player"
+if ($playerType) {
+    Write-Host "`n--- Player.Get overloads ---" -ForegroundColor Yellow
+    $getMethods = $playerType.GetMethods() | Where-Object { $_.Name -eq "Get" -and $_.IsStatic -and $_.IsPublic }
+    foreach ($m in $getMethods) {
+        $prms = ($m.GetParameters() | ForEach-Object { "$($_.ParameterType.FullName)" }) -join ", "
+        Write-Host "  Get($prms) -> $($m.ReturnType.FullName)"
     }
     
-    try {
-        $asm = [System.Reflection.Assembly]::LoadFrom($path)
-    } catch {
-        "=== $dll LOAD FAILED: $($_.Exception.Message) ==="
-        return
+    Write-Host "`n--- Player.TryGet overloads ---" -ForegroundColor Yellow
+    $tryGetMethods = $playerType.GetMethods() | Where-Object { $_.Name -eq "TryGet" -and $_.IsStatic -and $_.IsPublic }
+    foreach ($m in $tryGetMethods) {
+        $prms = ($m.GetParameters() | ForEach-Object { "$($_.ParameterType.FullName) $($_.Name)" }) -join ", "
+        Write-Host "  TryGet($prms) -> $($m.ReturnType)"
     }
-    
-    "`n========== $dll =========="
-    $types = $asm.GetExportedTypes() | Sort-Object FullName
-    
-    foreach ($t in $types) {
-        $isEnum = $t.IsEnum
-        $isIface = $t.IsInterface
-        $kind = if ($isEnum) { "enum" } elseif ($isIface) { "interface" } else { "class" }
-        
-        # Skip compiler-generated types
-        if ($t.FullName -match '<|AnonymousType|__StaticArrayInit') { continue }
-        
-        # Print type header
-        if ($t.BaseType -and $t.BaseType.FullName -ne "System.Object" -and $t.BaseType.FullName -ne "System.Enum" -and $t.BaseType.FullName -ne "System.MulticastDelegate" -and $t.BaseType.FullName -ne "System.ValueType") {
-            "  $kind $($t.FullName) : $($t.BaseType.FullName)"
-        } else {
-            "  $kind $($t.FullName)"
-        }
+}
 
-        # Enums: list values
-        if ($isEnum) {
-            $vals = [System.Enum]::GetNames($t)
-            foreach ($v in $vals) {
-                "      $v"
-            }
-            continue
-        }
-
-        # Properties
-        $props = $t.GetProperties([System.Reflection.BindingFlags]::Public -bor [System.Reflection.BindingFlags]::Instance -bor [System.Reflection.BindingFlags]::DeclaredOnly) | Where-Object { $_.GetMethod -and !$_.GetMethod.IsSpecialName }
-        foreach ($p in $props) {
-            $rw = ""
-            if ($p.CanRead) { $rw += "get;" }
-            if ($p.CanWrite) { $rw += "set;" }
-            "      PROP $($p.PropertyType) $($p.Name) {$rw}"
-        }
-
-        # Methods (public, instance/static, declared)
-        $methods = $t.GetMethods([System.Reflection.BindingFlags]::Public -bor [System.Reflection.BindingFlags]::Instance -bor [System.Reflection.BindingFlags]::Static -bor [System.Reflection.BindingFlags]::DeclaredOnly) | Where-Object { !$_.IsSpecialName -and !$_.Name.StartsWith("get_") -and !$_.Name.StartsWith("set_") }
-        foreach ($m in $methods) {
-            $stat = if ($m.IsStatic) { "static" } else { "" }
-            $virt = if ($m.IsVirtual -and !$m.IsFinal) { "virtual" } else { "" }
-            $ovrd = if ($m.GetBaseDefinition().DeclaringType -ne $t) { "override" } else { "" }
-            if ($ovrd) { $virt = "" }
-            $flags = @($stat, $virt, $ovrd) | Where-Object { $_ } -join " "
-            $prms = ($m.GetParameters() | ForEach-Object { "$($_.ParameterType) $($_.Name)" }) -join ", "
-            "      $flags $($m.ReturnType) $($m.Name)($prms)"
-        }
-
-        # Static fields (for singletons)
-        $fields = $t.GetFields([System.Reflection.BindingFlags]::Public -bor [System.Reflection.BindingFlags]::Static -bor [System.Reflection.BindingFlags]::DeclaredOnly)
-        foreach ($f in $fields) {
-            "      STATIC FIELD $($f.FieldType) $($f.Name)"
+# 3. CustomEventsHandler - all virtual methods with "Command" or "RoundStart" in name
+Write-Host "`n--- CustomEventsHandler methods (Command+/RoundStart+) ---" -ForegroundColor Yellow
+$handlerType = Find-Type $labapi "LabApi.Events.CustomHandlers.CustomEventsHandler"
+if ($handlerType) {
+    $methods = $handlerType.GetMethods([System.Reflection.BindingFlags]::Public -bor [System.Reflection.BindingFlags]::Instance -bor [System.Reflection.BindingFlags]::DeclaredOnly) | Where-Object { $_.IsVirtual }
+    foreach ($m in $methods) {
+        if ($m.Name -match 'Command|Round|Lobby|Waiting|Started') {
+            $prms = ($m.GetParameters() | ForEach-Object { "$($_.ParameterType.Name)" }) -join ", "
+            Write-Host "  override $($m.Name)($prms)"
         }
     }
 }
 
-Dump-All "LabApi.dll"
-Dump-All "Assembly-CSharp.dll"
+# Load Assembly-CSharp (may fail on many deps)
+Write-Host "`n=== Trying Assembly-CSharp.dll ===" -ForegroundColor Green
+try {
+    $asc = [System.Reflection.Assembly]::LoadFrom("$binDir\Assembly-CSharp.dll")
+    
+    # 4. RoundStart class
+    $rsType = Find-Type $asc "RoundStart"
+    if (-not $rsType) {
+        $rsType = Find-Type $asc "GameCore.RoundStart"
+    }
+    if ($rsType) {
+        Write-Host "`n--- RoundStart: $($rsType.FullName) ---" -ForegroundColor Yellow
+        Write-Host "  Base: $($rsType.BaseType.FullName)"
+        
+        # Static fields (singletons)
+        $fields = $rsType.GetFields([System.Reflection.BindingFlags]::Public -bor [System.Reflection.BindingFlags]::Static -bor [System.Reflection.BindingFlags]::DeclaredOnly)
+        foreach ($f in $fields) { Write-Host "  STATIC: $($f.FieldType.Name) $($f.Name)" }
+        
+        # Properties
+        $props = $rsType.GetProperties([System.Reflection.BindingFlags]::Public -bor [System.Reflection.BindingFlags]::Instance -bor [System.Reflection.BindingFlags]::DeclaredOnly)
+        foreach ($p in $props) {
+            $rw = ""
+            if ($p.CanRead) { $rw += "get;" }
+            if ($p.CanWrite) { $rw += "set;" }
+            Write-Host "  PROP: $($p.PropertyType.Name) $($p.Name) {$rw}"
+        }
+        
+        # Methods
+        $methods = $rsType.GetMethods([System.Reflection.BindingFlags]::Public -bor [System.Reflection.BindingFlags]::Instance -bor [System.Reflection.BindingFlags]::Static -bor [System.Reflection.BindingFlags]::DeclaredOnly) | Where-Object { !$_.IsSpecialName -and !$_.Name.StartsWith('get_') -and !$_.Name.StartsWith('set_') }
+        foreach ($m in $methods) {
+            $isStatic = if ($m.IsStatic) { "static " } else { "" }
+            $prms = ($m.GetParameters() | ForEach-Object { "$($_.ParameterType.Name) $($_.Name)" }) -join ", "
+            Write-Host "  $isStatic$($m.Name)($prms)"
+        }
+    } else {
+        Write-Host "  RoundStart NOT FOUND" -ForegroundColor Red
+        
+        # Find any type containing "RoundStart"
+        $rsTypes = $asc.GetExportedTypes() | Where-Object { $_.Name -match 'RoundStart' }
+        foreach ($t in $rsTypes) {
+            Write-Host "  Found: $($t.FullName) : $($t.BaseType.FullName)" -ForegroundColor Cyan
+        }
+    }
+    
+    # 5. CommandSender class
+    $csType = Find-Type $asc "CommandSender"
+    if ($csType) {
+        Write-Host "`n--- CommandSender: $($csType.FullName) ---" -ForegroundColor Yellow
+        Write-Host "  Base: $($csType.BaseType.FullName)"
+        
+        $props = $csType.GetProperties([System.Reflection.BindingFlags]::Public -bor [System.Reflection.BindingFlags]::Instance -bor [System.Reflection.BindingFlags]::DeclaredOnly)
+        foreach ($p in $props) {
+            $rw = ""
+            if ($p.CanRead) { $rw += "get;" }
+            if ($p.CanWrite) { $rw += "set;" }
+            Write-Host "  PROP: $($p.PropertyType.Name) $($p.Name) {$rw}"
+        }
+    }
+    
+} catch {
+    Write-Host "  Assembly-CSharp.dll LOAD FAILED: $($_.Exception.Message)" -ForegroundColor Red
+}
+
+Write-Host "`nDone." -ForegroundColor Green
