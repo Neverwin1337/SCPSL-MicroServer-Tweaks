@@ -69,7 +69,8 @@ copy_required() {
     exit 1
 }
 
-copy_required "Assembly-CSharp.dll"        "Assembly-CSharp.dll"
+copy_required "Assembly-CSharp.dll"         "Assembly-CSharp.dll"
+copy_required "Assembly-CSharp-firstpass.dll" "Assembly-CSharp-firstpass.dll"
 copy_required "LabApi.dll"                "LabApi.dll" "LabAPI.dll"
 copy_required "UnityEngine.CoreModule.dll" "UnityEngine.CoreModule.dll"
 

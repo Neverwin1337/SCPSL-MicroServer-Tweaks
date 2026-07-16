@@ -5,7 +5,7 @@ using PlayerRoles;
 
 namespace SCPSL_MicroServer_Tweaks
 {
-    [CommandHandlerAttribute(typeof(ClientCommandHandler))]
+    [CommandHandler(typeof(ClientCommandHandler))]
     public class VoteCommand : ICommand
     {
         public string Command => "vote";

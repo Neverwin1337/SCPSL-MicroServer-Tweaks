@@ -17,6 +17,10 @@
       <HintPath>..\Binaries\Assembly-CSharp.dll</HintPath>
       <Private>false</Private>
     </Reference>
+    <Reference Include="Assembly-CSharp-firstpass">
+      <HintPath>..\Binaries\Assembly-CSharp-firstpass.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
     <Reference Include="LabApi">
       <HintPath>..\Binaries\LabApi.dll</HintPath>
       <Private>false</Private>
