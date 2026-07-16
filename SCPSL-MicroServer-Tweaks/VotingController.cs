@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using GameCore;
 using LabApi.Features.Wrappers;
 using PlayerRoles;
 using UnityEngine;
@@ -24,7 +23,6 @@ namespace SCPSL_MicroServer_Tweaks
         private bool _active;
         private bool _assignmentsReady;
         private float _lobbyTimerSetAt;
-        private float _earlyEndTimerStart;
 
         public bool IsActive => _active;
         public IReadOnlyDictionary<RoleTypeId, int> VoteCounts => _voteCounts;
@@ -46,11 +44,7 @@ namespace SCPSL_MicroServer_Tweaks
             _assignments.Clear();
             _active = true;
             _assignmentsReady = false;
-            _earlyEndTimerStart = 0;
             _lobbyTimerSetAt = Time.realtimeSinceStartup;
-
-            SetLobbyTimer(_plugin.Config.LobbyTimerSeconds);
-
             SendVoteHints();
         }
 
@@ -62,7 +56,6 @@ namespace SCPSL_MicroServer_Tweaks
             _votes[player] = role;
             RecalculateCounts();
             SendVoteHints();
-            CheckEarlyEnd();
             return true;
         }
 
@@ -184,35 +177,6 @@ namespace SCPSL_MicroServer_Tweaks
             {
                 _voteCounts.TryGetValue(role, out int cnt);
                 _voteCounts[role] = cnt + 1;
-            }
-        }
-
-        private void SetLobbyTimer(float seconds)
-        {
-            try
-            {
-                if (RoundStart.singleton != null)
-                    RoundStart.singleton.NetworkRoundStartTime = Time.realtimeSinceStartup + seconds;
-            }
-            catch (Exception ex)
-            {
-                _plugin.Debug("SetLobbyTimer failed: " + ex.Message);
-            }
-        }
-
-        private void CheckEarlyEnd()
-        {
-            if (_earlyEndTimerStart > 0)
-                return;
-
-            int total = TotalPlayers;
-            if (total == 0)
-                return;
-
-            if ((float)TotalVoters / total >= _plugin.Config.VotingEarlyEndThreshold)
-            {
-                _earlyEndTimerStart = Time.realtimeSinceStartup;
-                SetLobbyTimer(_plugin.Config.VotingEarlyEndCountdown);
             }
         }
     }

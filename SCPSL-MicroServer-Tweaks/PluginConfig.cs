@@ -73,15 +73,6 @@ namespace SCPSL_MicroServer_Tweaks
         [Description("How many seconds voting lasts in the lobby.")]
         public float VotingTimeSeconds { get; set; } = 45f;
 
-        [Description("Lobby timer value when voting is active. Gives players time to vote before the round starts.")]
-        public float LobbyTimerSeconds { get; set; } = 60f;
-
-        [Description("Fraction of players (0.0–1.0) that must vote before the lobby timer is shortened to the early-end countdown.")]
-        public float VotingEarlyEndThreshold { get; set; } = 0.75f;
-
-        [Description("Countdown in seconds after the early-end threshold is met.")]
-        public float VotingEarlyEndCountdown { get; set; } = 10f;
-
         public float GetScpFreezeSeconds(int readyPlayerCount)
         {
             float configured;
@@ -157,24 +148,6 @@ namespace SCPSL_MicroServer_Tweaks
                 if (VotingTimeSeconds < 10f)
                 {
                     error = "VotingTimeSeconds must be at least 10.";
-                    return false;
-                }
-
-                if (LobbyTimerSeconds < VotingTimeSeconds + 5f)
-                {
-                    error = "LobbyTimerSeconds must be at least VotingTimeSeconds + 5.";
-                    return false;
-                }
-
-                if (VotingEarlyEndThreshold < 0f || VotingEarlyEndThreshold > 1f)
-                {
-                    error = "VotingEarlyEndThreshold must be between 0 and 1.";
-                    return false;
-                }
-
-                if (VotingEarlyEndCountdown < 3f)
-                {
-                    error = "VotingEarlyEndCountdown must be at least 3.";
                     return false;
                 }
             }

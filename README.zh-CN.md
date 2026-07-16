@@ -294,9 +294,6 @@ enable_debug_logging: false
 # 身份投票
 enable_role_voting: true
 voting_time_seconds: 45
-lobby_timer_seconds: 60
-voting_early_end_threshold: 0.75
-voting_early_end_countdown: 10
 ```
 
 ### 什么是 "Respawn Token"?
