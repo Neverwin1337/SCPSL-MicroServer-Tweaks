@@ -99,6 +99,12 @@ team_respawn_queue: 40144443
   - 位置锁定走 Unity 主线程。
   - 只引用**你自己当前服务器**的 DLL,没有老版本 DLL 包。
 
+- 🗳️ **大厅身份投票**
+  - 在大厅倒计时期间玩家可以在控制台输入 `.1` `.2` `.3` `.4` 或 `.vote scp/sci/d/guard` 投票选择开局身份。
+  - 通过屏幕提示实时显示各角色票数。
+  - 可配置投票时长与提前截止阈值（如 75% 投完即加速）。
+  - 角色分配在回合开始时拦截原始分配来应用投票结果，未投票者随机分配。
+
 ---
 
 ## 📋 推荐开场角色配置
@@ -147,9 +153,11 @@ Set-ExecutionPolicy -Scope Process Bypass
   -ServerPath "C:\Path\To\SCP Secret Laboratory Dedicated Server"
 ```
 
-脚本只会拷贝这三个服务器 DLL:
+脚本只会拷贝这几个服务器 DLL:
 
 - `Assembly-CSharp.dll`
+- `Mirror.dll`
+- `CommandSystem.Core.dll`
 - `LabApi.dll` / `LabAPI.dll`
 - `UnityEngine.CoreModule.dll`
 
@@ -282,6 +290,13 @@ chaos_starting_tokens: 2
 maximum_token_value: 20
 
 enable_debug_logging: false
+
+# 身份投票
+enable_role_voting: true
+voting_time_seconds: 45
+lobby_timer_seconds: 60
+voting_early_end_threshold: 0.75
+voting_early_end_countdown: 10
 ```
 
 ### 什么是 "Respawn Token"?

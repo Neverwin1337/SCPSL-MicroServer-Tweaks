@@ -88,6 +88,12 @@ Done. 🎉 Join with a few friends, watch the SCPs spawn-frozen for a moment, an
   - Position locking runs on Unity's main thread.
   - Only references the DLLs shipped with **your own current server** — no frozen DLL packs.
 
+- 🗳️ **Lobby role voting**
+  - Players can vote for their desired starting role during the lobby countdown by typing `.1` `.2` `.3` `.4` or `.vote scp/sci/d/guard` in the game console.
+  - Real-time vote counts shown via on-screen hints.
+  - Configurable voting duration and early-end threshold (e.g. 75% voted → shorten lobby timer).
+  - Role assignment intercepts the initial spawn to apply votes; non-voters get a random role.
+
 ---
 
 ## 📋 Recommended opening role queue
@@ -139,6 +145,8 @@ Set-ExecutionPolicy -Scope Process Bypass
 The script copies only these current server assemblies:
 
 - `Assembly-CSharp.dll`
+- `Mirror.dll`
+- `CommandSystem.Core.dll`
 - `LabApi.dll` / `LabAPI.dll`
 - `UnityEngine.CoreModule.dll`
 
@@ -271,6 +279,13 @@ chaos_starting_tokens: 2
 maximum_token_value: 20
 
 enable_debug_logging: false
+
+# Role Voting
+enable_role_voting: true
+voting_time_seconds: 45
+lobby_timer_seconds: 60
+voting_early_end_threshold: 0.75
+voting_early_end_countdown: 10
 ```
 
 ### What is a "Respawn Token"?

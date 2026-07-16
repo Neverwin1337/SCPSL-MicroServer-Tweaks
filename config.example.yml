@@ -37,8 +37,9 @@ maximum_token_value: 20
 enable_debug_logging: false
 
 # Role Voting
+# Players type .1 .2 .3 .4 or .vote scp/sci/d/guard in the game console during lobby.
 enable_role_voting: true
 voting_time_seconds: 45
 lobby_timer_seconds: 60
-voting_early_end_threshold: 0.75
-voting_early_end_countdown: 10
+voting_early_end_threshold: 0.75  # 0.0–1.0, shorten timer when fraction of players voted
+voting_early_end_countdown: 10    # countdown after threshold reached
