@@ -44,6 +44,8 @@ function Copy-RequiredAssembly {
 }
 
 Copy-RequiredAssembly @("Assembly-CSharp.dll") "Assembly-CSharp.dll"
+Copy-RequiredAssembly @("Mirror.dll") "Mirror.dll"
+Copy-RequiredAssembly @("CommandSystem.Core.dll") "CommandSystem.Core.dll"
 Copy-RequiredAssembly @("LabApi.dll", "LabAPI.dll") "LabApi.dll"
 Copy-RequiredAssembly @("UnityEngine.CoreModule.dll") "UnityEngine.CoreModule.dll"
 Copy-RequiredAssembly @("UnityEngine.CoreModule.dll") "UnityEngine.CoreModule.dll"

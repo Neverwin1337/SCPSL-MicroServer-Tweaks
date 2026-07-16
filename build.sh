@@ -70,7 +70,9 @@ copy_required() {
 }
 
 copy_required "Assembly-CSharp.dll"        "Assembly-CSharp.dll"
-copy_required "LabApi.dll"                "LabApi.dll" "LabAPI.dll"
+copy_required "Mirror.dll"              "Mirror.dll"
+copy_required "CommandSystem.Core.dll"  "CommandSystem.Core.dll"
+copy_required "LabApi.dll"             "LabApi.dll" "LabAPI.dll"
 copy_required "UnityEngine.CoreModule.dll" "UnityEngine.CoreModule.dll"
 copy_required "UnityEngine.CoreModule.dll" "UnityEngine.CoreModule.dll"
 

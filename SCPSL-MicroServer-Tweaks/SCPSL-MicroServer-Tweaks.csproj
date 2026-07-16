@@ -17,6 +17,14 @@
       <HintPath>..\Binaries\Assembly-CSharp.dll</HintPath>
       <Private>false</Private>
     </Reference>
+    <Reference Include="Mirror">
+      <HintPath>..\Binaries\Mirror.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="CommandSystem.Core">
+      <HintPath>..\Binaries\CommandSystem.Core.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
     <Reference Include="LabApi">
       <HintPath>..\Binaries\LabApi.dll</HintPath>
       <Private>false</Private>
