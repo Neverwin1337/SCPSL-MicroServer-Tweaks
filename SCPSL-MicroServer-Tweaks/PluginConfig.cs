@@ -73,6 +73,9 @@ namespace SCPSL_MicroServer_Tweaks
         [Description("How many seconds voting lasts in the lobby.")]
         public float VotingTimeSeconds { get; set; } = 45f;
 
+        [Description("How often the vote hint is refreshed, in seconds.")]
+        public float VoteHintIntervalSeconds { get; set; } = 1f;
+
         public float GetScpFreezeSeconds(int readyPlayerCount)
         {
             float configured;
@@ -148,6 +151,12 @@ namespace SCPSL_MicroServer_Tweaks
                 if (VotingTimeSeconds < 10f)
                 {
                     error = "VotingTimeSeconds must be at least 10.";
+                    return false;
+                }
+
+                if (VoteHintIntervalSeconds < 0.1f)
+                {
+                    error = "VoteHintIntervalSeconds must be at least 0.1.";
                     return false;
                 }
             }

@@ -40,3 +40,4 @@ enable_debug_logging: false
 # Players type .1 .2 .3 .4 or .vote scp/sci/d/guard in the game console during lobby.
 enable_role_voting: true
 voting_time_seconds: 45
+vote_hint_interval_seconds: 1

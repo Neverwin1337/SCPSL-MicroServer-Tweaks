@@ -54,7 +54,8 @@ namespace SCPSL_MicroServer_Tweaks
             FreezeController = _controllerObject.AddComponent<FreezeController>();
             FreezeController.Initialize(this);
 
-            VotingController = new VotingController(this);
+            VotingController = _controllerObject.AddComponent<VotingController>();
+            VotingController.Initialize(this);
 
             _eventHandlers = new EventHandlers(this);
             CustomHandlersManager.RegisterEventsHandler(_eventHandlers);

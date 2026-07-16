@@ -7,7 +7,7 @@ using UnityEngine;
 
 namespace SCPSL_MicroServer_Tweaks
 {
-    public sealed class VotingController
+    public sealed class VotingController : MonoBehaviour
     {
         internal static readonly (RoleTypeId role, string shortName, string displayName)[] Roles = {
             (RoleTypeId.Scp049, "SCP", "SCP"),
@@ -16,13 +16,14 @@ namespace SCPSL_MicroServer_Tweaks
             (RoleTypeId.FacilityGuard, "Guard", "安保人員"),
         };
 
-        private readonly SCPSL_MicroServer_TweaksPlugin _plugin;
+        private SCPSL_MicroServer_TweaksPlugin _plugin;
         private readonly Dictionary<Player, RoleTypeId> _votes = new Dictionary<Player, RoleTypeId>();
         private readonly Dictionary<RoleTypeId, int> _voteCounts = new Dictionary<RoleTypeId, int>();
         private readonly Dictionary<Player, RoleTypeId> _assignments = new Dictionary<Player, RoleTypeId>();
         private bool _active;
         private bool _assignmentsReady;
         private float _lobbyTimerSetAt;
+        private float _nextHintAt;
 
         public bool IsActive => _active;
         public IReadOnlyDictionary<RoleTypeId, int> VoteCounts => _voteCounts;
@@ -32,7 +33,7 @@ namespace SCPSL_MicroServer_Tweaks
             ? Math.Max(0, _plugin.Config.VotingTimeSeconds - (Time.realtimeSinceStartup - _lobbyTimerSetAt))
             : 0;
 
-        public VotingController(SCPSL_MicroServer_TweaksPlugin plugin)
+        public void Initialize(SCPSL_MicroServer_TweaksPlugin plugin)
         {
             _plugin = plugin;
         }
@@ -45,6 +46,7 @@ namespace SCPSL_MicroServer_Tweaks
             _active = true;
             _assignmentsReady = false;
             _lobbyTimerSetAt = Time.realtimeSinceStartup;
+            _nextHintAt = 0f;
             SendVoteHints();
         }
 
@@ -55,7 +57,6 @@ namespace SCPSL_MicroServer_Tweaks
 
             _votes[player] = role;
             RecalculateCounts();
-            SendVoteHints();
             return true;
         }
 
@@ -113,6 +114,22 @@ namespace SCPSL_MicroServer_Tweaks
             _active = false;
         }
 
+        private void Update()
+        {
+            if (_plugin == null || !_active)
+                return;
+
+            float now = Time.realtimeSinceStartup;
+            if (TimeRemaining <= 0f)
+                return;
+
+            if (now >= _nextHintAt)
+            {
+                SendVoteHints();
+                _nextHintAt = now + _plugin.Config.VoteHintIntervalSeconds;
+            }
+        }
+
         private void SendVoteHints()
         {
             int remaining = (int)Math.Ceiling(TimeRemaining);
@@ -131,10 +148,11 @@ namespace SCPSL_MicroServer_Tweaks
             body += "\n<size=16><color=#cccccc>在控制台輸入 .1 .2 .3 .4 投票</color></size>";
 
             string fullHint = header + body;
+            float duration = _plugin.Config.VoteHintIntervalSeconds + 0.25f;
 
             foreach (Player player in Player.ReadyList)
             {
-                player.SendHint(fullHint, 3f);
+                player.SendHint(fullHint, duration);
             }
         }
 
