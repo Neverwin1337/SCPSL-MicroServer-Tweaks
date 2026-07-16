@@ -51,7 +51,7 @@ namespace SCPSL_MicroServer_Tweaks
             }
         }
 
-        public override void OnCommandExecuting(CommandExecutingEventArgs args)
+        public override void OnServerCommandExecuting(CommandExecutingEventArgs args)
         {
             if (!_plugin.Config.EnableRoleVoting)
                 return;
