@@ -111,6 +111,19 @@ team_respawn_queue: 40144443
   - **スクランブル** — 全人類をランダムテレポート。LCZ 汚染済みなら LCZ を除外
   - テストコマンド: `mst_event <elevator|doors|stealth|blackout|nuke|scramble>`
 
+- 🔑 **リモートキーカード**
+  - プレイヤーは**キーカードを手に持たずに**ドア、発電機、SCP ロッカー、核弾頭パネルを開けられます — インベントリに正しいキーカードがあればOK。
+  - ドア、発電機、核弾頭パネル、SCP ロッカーは個別にオン/オフ可能
+  - 記憶障害（Amnesia）状態では使用不可
+  - 手に持つ必要なし、インベントリにあれば機能
+
+- ⏱️ **リスポーンカウントダウンヒント**
+  - 観戦者に次のリスポーンウェーブまでのカウントダウンを表示。
+  - 次のスポーンチーム（NTF または Chaos）と残り秒数を表示
+  - 毎秒更新
+  - 観戦者（死亡プレイヤー）のみに表示
+  - 画面下部に表示
+
 - 🪶 **軽量設計**
   - [RueI](https://github.com/pawslee/RueI) のみ依存（ヒント表示用）。EXILED、MEC、NWPluginAPI には依存しません。
   - 位置ロックは Unity のメインスレッドで動作。
@@ -314,6 +327,19 @@ random_event_blackout_duration: 180
 random_event_nuke_countdown_seconds: 60
 random_event_nuke_false_alarm_chance: 0.5
 random_event_nuke_min_minutes: 10
+
+# リモートキーカード
+enable_remote_keycard: true
+remote_keycard_affect_doors: true
+remote_keycard_affect_generators: true
+remote_keycard_affect_warhead_panel: true
+remote_keycard_affect_scp_lockers: true
+
+# リスポーンカウントダウンヒント
+enable_respawn_hint: true
+respawn_hint_format: "<size=20><color=#aaaaaa>距離 {0} 重生還有 {1} 秒</color></size>"
+respawn_hint_ntf_name: "NTF"
+respawn_hint_chaos_name: "混沌分裂者"
 ```
 
 ### "Respawn Token" とは?

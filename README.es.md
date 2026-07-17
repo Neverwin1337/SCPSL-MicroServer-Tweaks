@@ -111,6 +111,19 @@ Listo. 🎉 Invita a algunos amigos, observa cómo los SCP permanecen congelados
   - **Teletransporte aleatorio** — Todos los humanos teletransportados aleatoriamente; LCZ excluida si descontaminada
   - Comando de prueba: `mst_event <elevator|doors|stealth|blackout|nuke|scramble>`
 
+- 🔑 **Tarjeta de acceso remoto**
+  - Los jugadores pueden abrir puertas, generadores, armarios SCP y el panel de la ojiva nuclear **sin equipar una tarjeta** — siempre que tengan la tarjeta correcta en su inventario.
+  - Puertas, generadores, panel de ojiva y armarios SCP se pueden activar/desactivar individualmente
+  - El efecto Amnesia bloquea su uso
+  - No necesitas sostener la tarjeta en la mano, solo tenerla en el inventario
+
+- ⏱️ **Cuenta atrás de respawn**
+  - Los espectadores ven una cuenta atrás en vivo de la siguiente oleada de respawn.
+  - Muestra el próximo equipo (NTF o Chaos) y los segundos restantes
+  - Se actualiza cada segundo
+  - Solo visible para espectadores (jugadores muertos)
+  - Se muestra en la parte inferior de la pantalla
+
 - 🪶 **Diseño ligero**
   - Solo depende de [RueI](https://github.com/pawslee/RueI) para mostrar hints. Sin EXILED, MEC o NWPluginAPI.
   - El bloqueo de posición corre en el hilo principal de Unity.
@@ -314,6 +327,19 @@ random_event_blackout_duration: 180
 random_event_nuke_countdown_seconds: 60
 random_event_nuke_false_alarm_chance: 0.5
 random_event_nuke_min_minutes: 10
+
+# Tarjeta de acceso remoto
+enable_remote_keycard: true
+remote_keycard_affect_doors: true
+remote_keycard_affect_generators: true
+remote_keycard_affect_warhead_panel: true
+remote_keycard_affect_scp_lockers: true
+
+# Cuenta atrás de respawn
+enable_respawn_hint: true
+respawn_hint_format: "<size=20><color=#aaaaaa>距離 {0} 重生還有 {1} 秒</color></size>"
+respawn_hint_ntf_name: "NTF"
+respawn_hint_chaos_name: "混沌分裂者"
 ```
 
 ### ¿Qué es un "Respawn Token"?

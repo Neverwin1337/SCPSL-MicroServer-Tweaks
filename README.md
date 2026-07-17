@@ -87,6 +87,31 @@ Use `mst_event <elevator|doors|stealth|blackout|nuke|scramble>` in RA / console 
 
 ---
 
+### 🔑 Remote Keycard
+
+Players can open doors, generators, SCP lockers, and the warhead panel **without equipping a keycard** — as long as they have the right keycard somewhere in their inventory.
+
+- Works on doors, generators, warhead panel, and SCP lockers (each toggleable)
+- Amnesia effect blocks usage (configurable)
+- No need to hold the keycard in hand — just have it in your inventory
+
+**Result:** Less fumbling in your inventory during intense moments.
+
+---
+
+### ⏱️ Respawn Countdown Hint
+
+Spectators see a live countdown to the next respawn wave.
+
+- Shows the next spawning team (NTF or Chaos) and seconds remaining
+- Updates every second
+- Only visible to spectators (dead players)
+- Displayed at the bottom of the screen
+
+**Result:** Spectators know exactly when they'll respawn — no more guessing.
+
+---
+
 ### 🪶 Lightweight & Clean
 
 - **Minimal dependencies** — only [RueI](https://github.com/pawslee/RueI) for hint display; no EXILED, MEC, or NWPluginAPI
@@ -130,6 +155,19 @@ random_event_blackout_duration: 180
 random_event_nuke_countdown_seconds: 60
 random_event_nuke_false_alarm_chance: 0.5
 random_event_nuke_min_minutes: 10
+
+# Remote keycard
+enable_remote_keycard: true
+remote_keycard_affect_doors: true
+remote_keycard_affect_generators: true
+remote_keycard_affect_warhead_panel: true
+remote_keycard_affect_scp_lockers: true
+
+# Respawn hint
+enable_respawn_hint: true
+respawn_hint_format: "<size=20><color=#aaaaaa>距離 {0} 重生還有 {1} 秒</color></size>"
+respawn_hint_ntf_name: "NTF"
+respawn_hint_chaos_name: "混沌分裂者"
 ```
 
 Full example at [`config.example.yml`](./config.example.yml).

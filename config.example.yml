@@ -90,3 +90,20 @@ event_blackout_hint_format: "<size=24><color=#ff5555>設施停電中</color> <co
 event_nuke_broadcast: "核彈警報：偵測到核彈啟動序列"
 event_nuke_false_alarm_broadcast: "虛警：核彈警報已取消"
 event_scramble_broadcast: "空間異常：所有人員隨機傳送"
+
+# Remote Keycard
+# Players can open doors/generators/lockers/warhead without equipping a keycard,
+# as long as they have the right keycard in their inventory.
+enable_remote_keycard: true
+remote_keycard_affect_doors: true
+remote_keycard_affect_generators: true
+remote_keycard_affect_warhead_panel: true
+remote_keycard_affect_scp_lockers: true
+
+# Respawn Countdown Hint
+# Shows a countdown to the next respawn wave for spectators.
+# Format placeholders: {0}=team name, {1}=seconds remaining.
+enable_respawn_hint: true
+respawn_hint_format: "<size=20><color=#aaaaaa>距離 {0} 重生還有 {1} 秒</color></size>"
+respawn_hint_ntf_name: "NTF"
+respawn_hint_chaos_name: "混沌分裂者"

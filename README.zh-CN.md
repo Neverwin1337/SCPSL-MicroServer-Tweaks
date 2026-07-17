@@ -86,6 +86,31 @@ NTF 和 Chaos 开局有几个波次？**你说了算。**
 
 ---
 
+### 🔑 远程钥匙卡
+
+玩家**不用拿出钥匙卡**也能开门、开发电机、开 SCP 储物柜、开核弹面板 — 只要背包里有对应权限的钥匙卡就行。
+
+- 门、发电机、核弹面板、SCP 储物柜可个别开关
+- 失忆症状态下无法使用
+- 不需要手持钥匙卡，背包里有即可
+
+**效果：** 紧张时刻不用再手忙脚乱翻背包。
+
+---
+
+### ⏱️ 复活倒数提示
+
+观战者可以看到下一次重生波的倒数计时。
+
+- 显示下一个重生的队伍（NTF 或混沌分裂者）和剩余秒数
+- 每秒更新
+- 仅观战者（死亡玩家）可见
+- 显示在屏幕底部
+
+**效果：** 观战者知道还要等多久重生，不用再猜。
+
+---
+
 ### 🪶 轻量无依赖
 
 - **最低依赖** — 仅需 [RueI](https://github.com/pawslee/RueI) 作为提示显示框架；无 EXILED / MEC / NWPluginAPI
@@ -129,6 +154,19 @@ random_event_blackout_duration: 180
 random_event_nuke_countdown_seconds: 60
 random_event_nuke_false_alarm_chance: 0.5
 random_event_nuke_min_minutes: 10
+
+# 远程钥匙卡
+enable_remote_keycard: true
+remote_keycard_affect_doors: true
+remote_keycard_affect_generators: true
+remote_keycard_affect_warhead_panel: true
+remote_keycard_affect_scp_lockers: true
+
+# 复活倒数提示
+enable_respawn_hint: true
+respawn_hint_format: "<size=20><color=#aaaaaa>距离 {0} 重生还有 {1} 秒</color></size>"
+respawn_hint_ntf_name: "NTF"
+respawn_hint_chaos_name: "混沌分裂者"
 ```
 
 完整示例见 [`config.example.yml`](./config.example.yml)。
