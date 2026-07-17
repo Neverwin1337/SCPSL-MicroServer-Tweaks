@@ -1,4 +1,4 @@
-# SmallVanillaFlow
+# SCPSL-MicroServer-Tweaks
 
 > **SCP:SL 14.x** micro-server plugin — makes 3–12 player rounds actually fun  
 > Built on **LabAPI**, zero bloat, one config file.
@@ -27,7 +27,7 @@ Small servers have a pacing problem:
 
 > SCPs get insta-killed before they can move. Reinforcements never arrive (or arrive too late). Rounds end before they begin.
 
-**SmallVanillaFlow** fixes the early game with three focused features. No EXILED, no Harmony, no MEC — just drop the DLL and go.
+**SCPSL-MicroServer-Tweaks** fixes the early game with four focused features. No EXILED, no Harmony, no MEC — just drop the DLL and go.
 
 ---
 
@@ -35,7 +35,7 @@ Small servers have a pacing problem:
 
 **30 seconds to try it:**
 
-1. Grab `SmallVanillaFlow.dll` from [Releases](../../releases)
+1. Grab `SCPSL_MicroServer_Tweaks.dll` from [Releases](../../releases)
 2. Drop it into `LabAPI/plugins/global/`
 3. Start your server — you're done 🎉
 
@@ -81,6 +81,21 @@ During the lobby countdown, players type `.1` `.2` `.3` `.4` or `.vote scp/sci/d
 
 ---
 
+### 🎲 Random Events
+
+Every 3–5 minutes, a random event fires to keep rounds dynamic. All announcements use **C.A.S.S.I.E.** voice with custom pitch & glitch effects.
+
+- **Elevator Malfunction** — All elevators locked for 60s, with countdown hint
+- **All Doors Open** — Every facility door forced open (permanent)
+- **Stealth Protocol** — All humans get true invisibility (SCP-268 effect) for 30s, with countdown hint
+- **Blackout** — All three zones lights flicker (5s off / 1s on) for 3 min, with countdown hint
+- **Nuke Alert** — 50% false alarm / 50% real detonation, 60s countdown (min 10 min into round)
+- **Scramble** — All humans randomly teleported; LCZ rooms excluded if decontaminated
+
+Use `mst_event <elevator|doors|stealth|blackout|nuke|scramble>` in RA / console to test manually.
+
+---
+
 ### 🪶 Lightweight & Clean
 
 - **Zero dependencies** — no EXILED, Harmony, MEC, or NWPluginAPI
@@ -112,6 +127,18 @@ chaos_starting_tokens: 2
 enable_role_voting: true
 voting_time_seconds: 45
 vote_hint_interval_seconds: 1
+
+# Random events
+enable_random_events: true
+random_event_min_interval_seconds: 180
+random_event_max_interval_seconds: 300
+random_event_min_players: 1
+random_event_elevator_lock_duration: 60
+random_event_stealth_duration: 30
+random_event_blackout_duration: 180
+random_event_nuke_countdown_seconds: 60
+random_event_nuke_false_alarm_chance: 0.5
+random_event_nuke_min_minutes: 10
 ```
 
 Full example at [`config.example.yml`](./config.example.yml).

@@ -8,7 +8,7 @@
 [![Platform](https://img.shields.io/badge/platform-Windows%20%7C%20Linux%20%7C%20macOS-lightgrey.svg)](#)
 [![License](https://img.shields.io/badge/license-MIT-orange.svg)](#)
 
-プレイヤー数が少ないサーバーでは、バニラ SCP:SL のゲームバランスが崩壊します——ラウンドが数秒で終わり、SCP が動く前に殺され、増援の波が早すぎたり来なかったりします。**SCPSL-MicroServer-Tweaks** は、2 つの焦点を絞った設定可能な機能だけで、少人数サーバーの序盤を滑らかにします。**無駄は一切ありません**。
+プレイヤー数が少ないサーバーでは、バニラ SCP:SL のゲームバランスが崩壊します——ラウンドが数秒で終わり、SCP が動く前に殺され、増援の波が早すぎたり来なかったりします。**SCPSL-MicroServer-Tweaks** は、4 つの焦点を絞った設定可能な機能で、少人数サーバーの序盤を滑らかにします。**無駄は一切ありません**。
 
 ## 🌐 言語 / Languages / 言語
 
@@ -47,7 +47,7 @@
 
 ### ステップ 3 — インストール
 
-`SmallVanillaFlow.dll` を LabAPI **global** プラグインディレクトリにコピーします:
+`SCPSL_MicroServer_Tweaks.dll` を LabAPI **global** プラグインディレクトリにコピーします:
 
 | OS | パス |
 |----|------|
@@ -93,6 +93,21 @@ team_respawn_queue: 40144443
     - `Set` — バニラの初期値を置き換え。
     - `Add` — バニラの値に加算。
   - 陣営ごとに制御可能。`-1` でその陣営を未変更に。
+
+- 🗳️ **ロビー役割投票**
+  - ロビー待機中、`.1` `.2` `.3` `.4` または `.vote scp/sci/d/guard` で投票。
+  - リアルタイム画面ヒント: 残り時間、票数、投票方法を表示。
+  - 未投票者はランダム割り当て。
+
+- 🎲 **ランダムイベント**
+  - 3〜5 分ごとにランダムイベントが発生。すべて **C.A.S.S.I.E.** 音声で通知(カスタムピッチ & グリッチ効果)。
+  - **エレベーター故障** — 全エレベーター停止 60 秒、カウントダウンヒント付き
+  - **全ドア開放** — 施設内全ドアを強制開放(永続)
+  - **ステルスプロトコル** — 全人類に真の透明化(SCP-268 効果)30 秒、カウントダウンヒント付き
+  - **停電点滅** — 全 3 ゾーンのライトが点滅(5 秒消 / 1 秒点)3 分間、カウントダウンヒント付き
+  - **核弾頭警報** — 50% 誤報 / 50% 本物、60 秒カウントダウン(ラウンド開始 10 分後以降のみ)
+  - **スクランブル** — 全人類をランダムテレポート。LCZ 汚染済みなら LCZ を除外
+  - テストコマンド: `mst_event <elevator|doors|stealth|blackout|nuke|scramble>`
 
 - 🪶 **軽量設計**
   - EXILED、Harmony、MEC、NWPluginAPI には依存しません。
@@ -158,7 +173,7 @@ Set-ExecutionPolicy -Scope Process Bypass
 出力先:
 
 ```text
-SmallVanillaFlow\bin\Release\net48\SmallVanillaFlow.dll
+SCPSL-MicroServer-Tweaks/bin/Release/net48/SCPSL_MicroServer_Tweaks.dll
 ```
 
 #### ビルド + デプロイを 1 ステップで(Windows)
@@ -282,6 +297,21 @@ chaos_starting_tokens: 2
 maximum_token_value: 20
 
 enable_debug_logging: false
+
+enable_role_voting: true
+voting_time_seconds: 45
+vote_hint_interval_seconds: 1
+
+enable_random_events: true
+random_event_min_interval_seconds: 180
+random_event_max_interval_seconds: 300
+random_event_min_players: 1
+random_event_elevator_lock_duration: 60
+random_event_stealth_duration: 30
+random_event_blackout_duration: 180
+random_event_nuke_countdown_seconds: 60
+random_event_nuke_false_alarm_chance: 0.5
+random_event_nuke_min_minutes: 10
 ```
 
 ### "Respawn Token" とは?

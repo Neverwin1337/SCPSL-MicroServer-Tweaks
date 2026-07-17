@@ -76,6 +76,30 @@ namespace SCPSL_MicroServer_Tweaks
         [Description("How often the vote hint is refreshed, in seconds.")]
         public float VoteHintIntervalSeconds { get; set; } = 1f;
 
+        [Description("Display name for the SCP role in vote hints.")]
+        public string VoteRoleScpDisplayName { get; set; } = "SCP";
+
+        [Description("Display name for the Scientist role in vote hints.")]
+        public string VoteRoleScientistDisplayName { get; set; } = "科學家 Scientists";
+
+        [Description("Display name for the Class-D role in vote hints.")]
+        public string VoteRoleClassDDisplayName { get; set; } = "D級人員 ClassD";
+
+        [Description("Display name for the Facility Guard role in vote hints.")]
+        public string VoteRoleGuardDisplayName { get; set; } = "安保人員 Guard";
+
+        [Description("Vote hint header format. Placeholders: {0}=remaining seconds, {1}=voters, {2}=total players.")]
+        public string VoteHintHeaderFormat { get; set; } =
+            "<size=28><color=#ffaa00>身份投票 - 剩餘 {0}s ({1}/{2} 已投票)</color></size>";
+
+        [Description("Vote hint body line format. Placeholders: {0}=color hex, {1}=role display name, {2}=vote count.")]
+        public string VoteHintBodyLineFormat { get; set; } =
+            "<color={0}>{1}: {2} 票</color>\n";
+
+        [Description("Vote hint instruction text shown at the bottom.")]
+        public string VoteHintInstruction { get; set; } =
+            "\n<size=16><color=#cccccc>點鍵盤左上角~開控制臺 輸入 .1 .2 .3 .4 投票</color></size>";
+
         [Description("Whether timed random events are enabled during rounds.")]
         public bool EnableRandomEvents { get; set; } = true;
 
@@ -105,6 +129,39 @@ namespace SCPSL_MicroServer_Tweaks
 
         [Description("Chance (0-1) that the nuke alert is a false alarm. 0.5 = 50%.")]
         public float RandomEventNukeFalseAlarmChance { get; set; } = 0.5f;
+
+        [Description("Broadcast message for the Elevator Malfunction event.")]
+        public string EventElevatorBroadcast { get; set; } = "電梯故障：所有電梯已停用";
+
+        [Description("Countdown hint format for the Elevator Malfunction event. {0}=seconds remaining.")]
+        public string EventElevatorHintFormat { get; set; } =
+            "<size=24><color=#ff9900>電梯故障中</color> <color=white>剩餘 {0} 秒</color></size>";
+
+        [Description("Broadcast message for the All Doors Open event.")]
+        public string EventDoorsBroadcast { get; set; } = "設施門禁解除：所有門已開啟";
+
+        [Description("Broadcast message for the Stealth event.")]
+        public string EventStealthBroadcast { get; set; } = "隱形協議啟動：所有人類隱形且靜音";
+
+        [Description("Countdown hint format for the Stealth event. {0}=seconds remaining.")]
+        public string EventStealthHintFormat { get; set; } =
+            "<size=24><color=#66ffcc>隱形協議中</color> <color=white>剩餘 {0} 秒</color></size>";
+
+        [Description("Broadcast message for the Blackout event.")]
+        public string EventBlackoutBroadcast { get; set; } = "設施停電：全設施停電中";
+
+        [Description("Countdown hint format for the Blackout event. {0}=seconds remaining.")]
+        public string EventBlackoutHintFormat { get; set; } =
+            "<size=24><color=#ff5555>設施停電中</color> <color=white>剩餘 {0} 秒</color></size>";
+
+        [Description("Broadcast message for the Nuke Alert event.")]
+        public string EventNukeBroadcast { get; set; } = "核彈警報：偵測到核彈啟動序列";
+
+        [Description("Broadcast message when the nuke alert is a false alarm.")]
+        public string EventNukeFalseAlarmBroadcast { get; set; } = "虛警：核彈警報已取消";
+
+        [Description("Broadcast message for the Scramble event.")]
+        public string EventScrambleBroadcast { get; set; } = "空間異常：所有人員隨機傳送";
 
         public float GetScpFreezeSeconds(int readyPlayerCount)
         {

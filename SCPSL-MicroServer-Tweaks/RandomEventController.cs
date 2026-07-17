@@ -196,7 +196,7 @@ namespace SCPSL_MicroServer_Tweaks
             float duration = _plugin.Config.RandomEventElevatorLockDuration;
 
             CassieMessage("pitch_85 . glitch_0.3 jam_0.2 . attention . elevator systems malfunction . all elevators have been disabled .", 0.3f);
-            BroadcastMessage("電梯故障：所有電梯已停用", 6);
+            BroadcastMessage(_plugin.Config.EventElevatorBroadcast, 6);
 
             foreach (Elevator elevator in Map.Elevators)
             {
@@ -204,7 +204,7 @@ namespace SCPSL_MicroServer_Tweaks
             }
             _elevatorsLocked = true;
 
-            StartActiveHint("<size=24><color=#ff9900>電梯故障中</color> <color=white>剩餘 {0} 秒</color></size>", duration);
+            StartActiveHint(_plugin.Config.EventElevatorHintFormat, duration);
 
             ScheduleAction(duration, () =>
             {
@@ -221,7 +221,7 @@ namespace SCPSL_MicroServer_Tweaks
         private void AllDoorsOpenEvent()
         {
             CassieMessage("pitch_105 . attention . all facility doors have been opened . containment barriers released .", 0f);
-            BroadcastMessage("設施門禁解除：所有門已開啟", 6);
+            BroadcastMessage(_plugin.Config.EventDoorsBroadcast, 6);
 
             foreach (Door door in Map.Doors)
             {
@@ -234,7 +234,7 @@ namespace SCPSL_MicroServer_Tweaks
             float duration = _plugin.Config.RandomEventStealthDuration;
 
             CassieMessage("pitch_90 . glitch_0.1 jam_0.1 . attention . stealth protocol activated . all personnel rendered invisible and silent .", 0.1f);
-            BroadcastMessage("隱形協議啟動：所有人類隱形且靜音", 6);
+            BroadcastMessage(_plugin.Config.EventStealthBroadcast, 6);
 
             _stealthedPlayers.Clear();
             foreach (Player player in Player.ReadyList)
@@ -247,7 +247,7 @@ namespace SCPSL_MicroServer_Tweaks
                 _stealthedPlayers.Add(player);
             }
 
-            StartActiveHint("<size=24><color=#66ffcc>隱形協議中</color> <color=white>剩餘 {0} 秒</color></size>", duration);
+            StartActiveHint(_plugin.Config.EventStealthHintFormat, duration);
 
             ScheduleAction(duration, () =>
             {
@@ -270,10 +270,10 @@ namespace SCPSL_MicroServer_Tweaks
             float duration = _plugin.Config.RandomEventBlackoutDuration;
 
             CassieMessage("pitch_75 . glitch_0.4 jam_0.3 . attention . facility power systems failure . maintaining backup power .", 0.4f);
-            BroadcastMessage("設施停電：全設施停電中", 6);
+            BroadcastMessage(_plugin.Config.EventBlackoutBroadcast, 6);
 
             _blackoutActive = true;
-            StartActiveHint("<size=24><color=#ff5555>設施停電中</color> <color=white>剩餘 {0} 秒</color></size>", duration);
+            StartActiveHint(_plugin.Config.EventBlackoutHintFormat, duration);
             ScheduleBlackoutCycle(duration, 0f);
         }
 
@@ -321,7 +321,7 @@ namespace SCPSL_MicroServer_Tweaks
             float falseAlarmChance = _plugin.Config.RandomEventNukeFalseAlarmChance;
 
             CassieMessage("pitch_110 . glitch_0.5 jam_0.4 . alpha warhead emergency detonation sequence initiated . all personnel evacuate immediately .", 0.5f);
-            BroadcastMessage("核彈警報：偵測到核彈啟動序列", 10);
+            BroadcastMessage(_plugin.Config.EventNukeBroadcast, 10);
 
             Warhead.Start(true, false);
             Warhead.DetonationTime = countdown;
@@ -334,7 +334,7 @@ namespace SCPSL_MicroServer_Tweaks
                     {
                         Warhead.Stop();
                         CassieMessage("pitch_95 . false alarm . alpha warhead detonation cancelled .", 0.2f);
-                        BroadcastMessage("虛警：核彈警報已取消", 6);
+                        BroadcastMessage(_plugin.Config.EventNukeFalseAlarmBroadcast, 6);
                     }
                 }
             });
@@ -381,7 +381,7 @@ namespace SCPSL_MicroServer_Tweaks
             bool lczClosed = Decontamination.IsDecontaminating;
 
             CassieMessage("pitch_80 . glitch_0.2 jam_0.15 . attention . spatial anomaly detected . relocating all personnel .", 0.2f);
-            BroadcastMessage("空間異常：所有人員隨機傳送", 6);
+            BroadcastMessage(_plugin.Config.EventScrambleBroadcast, 6);
 
             List<Room> validRooms = new List<Room>();
             foreach (Room room in Map.Rooms)

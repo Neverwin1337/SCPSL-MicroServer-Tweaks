@@ -1,4 +1,4 @@
-# SmallVanillaFlow
+# SCPSL-MicroServer-Tweaks
 
 > **SCP:SL 14.x** 微服务器插件 — 让 3–12 人小服也能玩得爽  
 > 基于 **LabAPI**，零依赖，一个配置文件搞定。
@@ -27,7 +27,7 @@
 
 > SCP 还没动就被秒了，援军永远不来（或者来得太晚），回合还没开始就结束了。
 
-**SmallVanillaFlow** 用三个轻量功能解决这个问题。不依赖 EXILED / Harmony / MEC，丢个 DLL 就能用。
+**SCPSL-MicroServer-Tweaks** 用四个轻量功能解决这个问题。不依赖 EXILED / Harmony / MEC，丢个 DLL 就能用。
 
 ---
 
@@ -35,7 +35,7 @@
 
 **30 秒跑起来：**
 
-1. 下载 `SmallVanillaFlow.dll` 从 [Releases](../../releases)
+1. 下载 `SCPSL_MicroServer_Tweaks.dll` 从 [Releases](../../releases)
 2. 丢进 `LabAPI/plugins/global/` 文件夹
 3. 启动服务器，开玩 🎉
 
@@ -81,6 +81,21 @@ NTF 和 Chaos 开局有几个波次？**你说了算。**
 
 ---
 
+### 🎲 随机事件
+
+每 3–5 分钟随机触发一个事件，让回合更有变化。所有通知使用 **C.A.S.S.I.E.** 语音，带自定义音调与故障效果。
+
+- **电梯故障** — 所有电梯锁定 60 秒，带倒计时提示
+- **全门打开** — 设施所有门强制开启（永久）
+- **隐形协议** — 所有人类获得真隐身（SCP-268 效果）30 秒，带倒计时提示
+- **停电闪烁** — 全设施三区域灯光闪烁（暗 5 秒 / 亮 1 秒）持续 3 分钟，带倒计时提示
+- **核弹警报** — 50% 虚警 / 50% 真炸，60 秒倒计时（回合开始 10 分钟后才触发）
+- **随机传送** — 所有人类随机传送到不同房间；轻收容区已封闭则排除 LCZ
+
+用 `mst_event <elevator|doors|stealth|blackout|nuke|scramble>` 在 RA / 控制台手动测试。
+
+---
+
 ### 🪶 轻量无依赖
 
 - **零依赖** — 没有 EXILED / Harmony / MEC / NWPluginAPI
@@ -112,6 +127,18 @@ chaos_starting_tokens: 2
 enable_role_voting: true
 voting_time_seconds: 45
 vote_hint_interval_seconds: 1
+
+# 随机事件
+enable_random_events: true
+random_event_min_interval_seconds: 180
+random_event_max_interval_seconds: 300
+random_event_min_players: 1
+random_event_elevator_lock_duration: 60
+random_event_stealth_duration: 30
+random_event_blackout_duration: 180
+random_event_nuke_countdown_seconds: 60
+random_event_nuke_false_alarm_chance: 0.5
+random_event_nuke_min_minutes: 10
 ```
 
 完整示例见 [`config.example.yml`](./config.example.yml)。

@@ -9,11 +9,11 @@ namespace SCPSL_MicroServer_Tweaks
 {
     public sealed class VotingController : MonoBehaviour
     {
-        internal static readonly (RoleTypeId role, string shortName, string displayName)[] Roles = {
-            (RoleTypeId.Scp049, "SCP", "SCP"),
-            (RoleTypeId.Scientist, "Scientists", "科學家 Scientists"),
-            (RoleTypeId.ClassD, "ClassD", "D級人員 ClassD"),
-            (RoleTypeId.FacilityGuard, "Guard", "安保人員 Guard"),
+        internal static readonly (RoleTypeId role, string shortName)[] Roles = {
+            (RoleTypeId.Scp049, "SCP"),
+            (RoleTypeId.Scientist, "Scientists"),
+            (RoleTypeId.ClassD, "ClassD"),
+            (RoleTypeId.FacilityGuard, "Guard"),
         };
 
         private SCPSL_MicroServer_TweaksPlugin _plugin;
@@ -47,8 +47,8 @@ namespace SCPSL_MicroServer_Tweaks
             _assignmentsReady = false;
             _lobbyTimerSetAt = Time.realtimeSinceStartup;
             RecalculateCounts();
-            _nextHintAt = 0f;   // 保持 0，讓 Update 立刻送
-            SendVoteHints();        // ← 重要！立刻先送一次
+            _nextHintAt = 0f;   // Keep at 0 so Update sends immediately
+            SendVoteHints();        // Important: send first hint right away
         }
 
         public bool TryVote(Player player, RoleTypeId role)
@@ -122,11 +122,11 @@ namespace SCPSL_MicroServer_Tweaks
 
             float now = Time.realtimeSinceStartup;
 
-            // 強制高頻刷新（比 Config 更積極）
+            // Force high-frequency refresh (more aggressive than Config)
             if (now >= _nextHintAt)
             {
                 SendVoteHints();
-                _nextHintAt = now + 0.9f;     // 改成 0.9，比較穩
+                _nextHintAt = now + 0.9f;     // 0.9s interval for stability
             }
         }
 
@@ -137,22 +137,23 @@ namespace SCPSL_MicroServer_Tweaks
 
             int remaining = (int)Math.Ceiling(remainingTime);
 
-            string header = $"<size=28><color=#ffaa00>身份投票 - 剩餘 {remaining}s ({TotalVoters}/{TotalPlayers} 已投票)</color></size>";
+            string header = string.Format(_plugin.Config.VoteHintHeaderFormat, remaining, TotalVoters, TotalPlayers);
 
             string body = "\n<size=22>";
-            foreach (var (role, _, displayName) in Roles)
+            foreach (var (role, _) in Roles)
             {
                 _voteCounts.TryGetValue(role, out int count);
-                body += $"<color={GetRoleColor(role)}>{displayName}: {count} 票</color>\n";
+                string displayName = GetRoleDisplayName(role);
+                body += string.Format(_plugin.Config.VoteHintBodyLineFormat, GetRoleColor(role), displayName, count);
             }
             body += "</size>";
 
-            string instruction = "\n<size=16><color=#cccccc>點鍵盤左上角~開控制臺 輸入 .1 .2 .3 .4 投票</color></size>";
+            string instruction = _plugin.Config.VoteHintInstruction;
 
-            // 關鍵：大量換行 + 左對齊空格
+            // Key: many newlines + left-aligned spacing
             string fullHint =
-                "\n\n\n\n\n\n\n\n\n\n\n" +                    // 往下移（可調整行數）
-                "" + header + "\n" +        // 全形空格往右推（視覺靠左）
+                "\n\n\n\n\n\n\n\n\n\n\n" +                    // Push down (adjustable line count)
+                "" + header + "\n" +        // Left-aligned via full-width spaces
                 body +
                 instruction;
 
@@ -171,6 +172,18 @@ namespace SCPSL_MicroServer_Tweaks
                 RoleTypeId.ClassD => "#ffaa55",
                 RoleTypeId.FacilityGuard => "#55ff88",
                 _ => "#ffffff"
+            };
+        }
+
+        private string GetRoleDisplayName(RoleTypeId role)
+        {
+            return role switch
+            {
+                RoleTypeId.Scp049 => _plugin.Config.VoteRoleScpDisplayName,
+                RoleTypeId.Scientist => _plugin.Config.VoteRoleScientistDisplayName,
+                RoleTypeId.ClassD => _plugin.Config.VoteRoleClassDDisplayName,
+                RoleTypeId.FacilityGuard => _plugin.Config.VoteRoleGuardDisplayName,
+                _ => role.ToString()
             };
         }
 

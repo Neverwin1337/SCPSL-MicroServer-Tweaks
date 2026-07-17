@@ -8,7 +8,7 @@
 [![Platform](https://img.shields.io/badge/platform-Windows%20%7C%20Linux%20%7C%20macOS-lightgrey.svg)](#)
 [![License](https://img.shields.io/badge/license-MIT-orange.svg)](#)
 
-Cuando un servidor tiene solo unos pocos jugadores, el ritmo de SCP:SL vanilla se rompe: las rondas terminan en segundos, el SCP no tiene tiempo ni de moverse, y las oleadas de refuerzos llegan demasiado pronto o demasiado tarde. **SCPSL-MicroServer-Tweaks** suaviza el inicio de la partida en servidores pequeños con dos funciones enfocadas y configurables, y **cero florituras**.
+Cuando un servidor tiene solo unos pocos jugadores, el ritmo de SCP:SL vanilla se rompe: las rondas terminan en segundos, el SCP no tiene tiempo ni de moverse, y las oleadas de refuerzos llegan demasiado pronto o demasiado tarde. **SCPSL-MicroServer-Tweaks** suaviza el inicio de la partida en servidores pequeños con cuatro funciones enfocadas y configurables, y **cero florituras**.
 
 ## 🌐 Idiomas / Languages / 言語
 
@@ -47,7 +47,7 @@ Si solo quieres **ejecutar** el plugin (no compilar desde el código fuente), pu
 
 ### Paso 3 — Instálalo
 
-Copia `SmallVanillaFlow.dll` en la carpeta de plugins **global** de LabAPI:
+Copia `SCPSL_MicroServer_Tweaks.dll` en la carpeta de plugins **global** de LabAPI:
 
 | SO | Ruta |
 |----|------|
@@ -93,6 +93,21 @@ Listo. 🎉 Invita a algunos amigos, observa cómo los SCP permanecen congelados
     - `Set` — reemplaza el valor inicial vanilla.
     - `Add` — suma sobre el valor vanilla.
   - Control por facción, con `-1` para no modificar esa facción.
+
+- 🗳️ **Votación de roles en el lobby**
+  - Durante la espera en el lobby, escribe `.1` `.2` `.3` `.4` o `.vote scp/sci/d/guard` para votar.
+  - Aviso en pantalla en tiempo real: tiempo restante, conteo de votos, instrucciones.
+  - Los que no votan son asignados aleatoriamente.
+
+- 🎲 **Eventos aleatorios**
+  - Cada 3–5 minutos se dispara un evento aleatorio. Todos los avisos usan **C.A.S.S.I.E.** con tono y efectos de glitch personalizados.
+  - **Fallo de ascensores** — Todos los ascensores bloqueados 60s, con cuenta atrás
+  - **Apertura de todas las puertas** — Todas las puertas de la instalación se abren (permanente)
+  - **Protocolo sigilo** — Todos los humanos reciben invisibilidad real (efecto SCP-268) 30s, con cuenta atrás
+  - **Apagón intermitente** — Las luces de las 3 zonas parpadean (5s off / 1s on) durante 3 min, con cuenta atrás
+  - **Alerta de ojiva nuclear** — 50% falsa alarma / 50% detonación real, cuenta atrás de 60s (mín. 10 min de ronda)
+  - **Teletransporte aleatorio** — Todos los humanos teletransportados aleatoriamente; LCZ excluida si descontaminada
+  - Comando de prueba: `mst_event <elevator|doors|stealth|blackout|nuke|scramble>`
 
 - 🪶 **Diseño ligero**
   - Sin dependencias de EXILED, Harmony, MEC o NWPluginAPI.
@@ -158,7 +173,7 @@ El script solo copia estos tres ensamblados del servidor:
 Salida:
 
 ```text
-SmallVanillaFlow\bin\Release\net48\SmallVanillaFlow.dll
+SCPSL-MicroServer-Tweaks/bin/Release/net48/SCPSL_MicroServer_Tweaks.dll
 ```
 
 #### Compilar e implementar en un solo paso (Windows)
@@ -282,6 +297,21 @@ chaos_starting_tokens: 2
 maximum_token_value: 20
 
 enable_debug_logging: false
+
+enable_role_voting: true
+voting_time_seconds: 45
+vote_hint_interval_seconds: 1
+
+enable_random_events: true
+random_event_min_interval_seconds: 180
+random_event_max_interval_seconds: 300
+random_event_min_players: 1
+random_event_elevator_lock_duration: 60
+random_event_stealth_duration: 30
+random_event_blackout_duration: 180
+random_event_nuke_countdown_seconds: 60
+random_event_nuke_false_alarm_chance: 0.5
+random_event_nuke_min_minutes: 10
 ```
 
 ### ¿Qué es un "Respawn Token"?

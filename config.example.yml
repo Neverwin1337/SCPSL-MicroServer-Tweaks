@@ -42,6 +42,18 @@ enable_role_voting: true
 voting_time_seconds: 45
 vote_hint_interval_seconds: 1
 
+# Vote display names (shown in the vote hint).
+vote_role_scp_display_name: "SCP"
+vote_role_scientist_display_name: "科學家 Scientists"
+vote_role_class_d_display_name: "D級人員 ClassD"
+vote_role_guard_display_name: "安保人員 Guard"
+
+# Vote hint formats. Placeholders: {0}=remaining seconds, {1}=voters, {2}=total players.
+vote_hint_header_format: "<size=28><color=#ffaa00>身份投票 - 剩餘 {0}s ({1}/{2} 已投票)</color></size>"
+# Body line: {0}=color hex, {1}=role display name, {2}=vote count.
+vote_hint_body_line_format: "<color={0}>{1}: {2} 票</color>\n"
+vote_hint_instruction: "\n<size=16><color=#cccccc>點鍵盤左上角~開控制臺 輸入 .1 .2 .3 .4 投票</color></size>"
+
 # Random Events
 # Timed random events trigger every 3-5 minutes during a round.
 # All events use CASSIE for voice announcements.
@@ -65,3 +77,16 @@ random_event_blackout_duration: 180
 random_event_nuke_min_minutes: 10
 random_event_nuke_countdown_seconds: 60
 random_event_nuke_false_alarm_chance: 0.5
+
+# Event broadcast messages and hint formats.
+# Hint formats use {0} for seconds remaining.
+event_elevator_broadcast: "電梯故障：所有電梯已停用"
+event_elevator_hint_format: "<size=24><color=#ff9900>電梯故障中</color> <color=white>剩餘 {0} 秒</color></size>"
+event_doors_broadcast: "設施門禁解除：所有門已開啟"
+event_stealth_broadcast: "隱形協議啟動：所有人類隱形且靜音"
+event_stealth_hint_format: "<size=24><color=#66ffcc>隱形協議中</color> <color=white>剩餘 {0} 秒</color></size>"
+event_blackout_broadcast: "設施停電：全設施停電中"
+event_blackout_hint_format: "<size=24><color=#ff5555>設施停電中</color> <color=white>剩餘 {0} 秒</color></size>"
+event_nuke_broadcast: "核彈警報：偵測到核彈啟動序列"
+event_nuke_false_alarm_broadcast: "虛警：核彈警報已取消"
+event_scramble_broadcast: "空間異常：所有人員隨機傳送"
