@@ -1,9 +1,0 @@
-C:\Users\0810a\OneDrive\桌面\SmallVanillaFlow-LabAPI-14x-source\SmallVanillaFlow\SCPSL-MicroServer-Tweaks\obj\Release\net48\SCPSL-MicroServer-Tweaks.csproj.AssemblyReference.cache
-C:\Users\0810a\OneDrive\桌面\SmallVanillaFlow-LabAPI-14x-source\SmallVanillaFlow\SCPSL-MicroServer-Tweaks\obj\Release\net48\SCPSL-MicroServer-Tweaks.GeneratedMSBuildEditorConfig.editorconfig
-C:\Users\0810a\OneDrive\桌面\SmallVanillaFlow-LabAPI-14x-source\SmallVanillaFlow\SCPSL-MicroServer-Tweaks\obj\Release\net48\SCPSL-MicroServer-Tweaks.AssemblyInfoInputs.cache
-C:\Users\0810a\OneDrive\桌面\SmallVanillaFlow-LabAPI-14x-source\SmallVanillaFlow\SCPSL-MicroServer-Tweaks\obj\Release\net48\SCPSL-MicroServer-Tweaks.AssemblyInfo.cs
-C:\Users\0810a\OneDrive\桌面\SmallVanillaFlow-LabAPI-14x-source\SmallVanillaFlow\SCPSL-MicroServer-Tweaks\obj\Release\net48\SCPSL-MicroServer-Tweaks.csproj.CoreCompileInputs.cache
-C:\Users\0810a\OneDrive\桌面\SmallVanillaFlow-LabAPI-14x-source\SmallVanillaFlow\SCPSL-MicroServer-Tweaks\bin\Release\net48\SCPSL_MicroServer_Tweaks.dll
-C:\Users\0810a\OneDrive\桌面\SmallVanillaFlow-LabAPI-14x-source\SmallVanillaFlow\SCPSL-MicroServer-Tweaks\bin\Release\net48\SCPSL_MicroServer_Tweaks.pdb
-C:\Users\0810a\OneDrive\桌面\SmallVanillaFlow-LabAPI-14x-source\SmallVanillaFlow\SCPSL-MicroServer-Tweaks\obj\Release\net48\SCPSL_MicroServer_Tweaks.dll
-C:\Users\0810a\OneDrive\桌面\SmallVanillaFlow-LabAPI-14x-source\SmallVanillaFlow\SCPSL-MicroServer-Tweaks\obj\Release\net48\SCPSL_MicroServer_Tweaks.pdb

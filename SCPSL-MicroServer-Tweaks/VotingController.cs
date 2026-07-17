@@ -11,9 +11,9 @@ namespace SCPSL_MicroServer_Tweaks
     {
         internal static readonly (RoleTypeId role, string shortName, string displayName)[] Roles = {
             (RoleTypeId.Scp049, "SCP", "SCP"),
-            (RoleTypeId.Scientist, "Scientists", "科學家"),
-            (RoleTypeId.ClassD, "ClassD", "D級人員"),
-            (RoleTypeId.FacilityGuard, "Guard", "安保人員"),
+            (RoleTypeId.Scientist, "Scientists", "科學家 Scientists"),
+            (RoleTypeId.ClassD, "ClassD", "D級人員 ClassD"),
+            (RoleTypeId.FacilityGuard, "Guard", "安保人員 Guard"),
         };
 
         private SCPSL_MicroServer_TweaksPlugin _plugin;
@@ -46,8 +46,9 @@ namespace SCPSL_MicroServer_Tweaks
             _active = true;
             _assignmentsReady = false;
             _lobbyTimerSetAt = Time.realtimeSinceStartup;
-            _nextHintAt = 0f;
-            SendVoteHints();
+            RecalculateCounts();
+            _nextHintAt = 0f;   // 保持 0，讓 Update 立刻送
+            SendVoteHints();        // ← 重要！立刻先送一次
         }
 
         public bool TryVote(Player player, RoleTypeId role)
@@ -120,39 +121,44 @@ namespace SCPSL_MicroServer_Tweaks
                 return;
 
             float now = Time.realtimeSinceStartup;
-            if (TimeRemaining <= 0f)
-                return;
 
+            // 強制高頻刷新（比 Config 更積極）
             if (now >= _nextHintAt)
             {
                 SendVoteHints();
-                _nextHintAt = now + _plugin.Config.VoteHintIntervalSeconds;
+                _nextHintAt = now + 0.9f;     // 改成 0.9，比較穩
             }
         }
 
         private void SendVoteHints()
         {
-            int remaining = (int)Math.Ceiling(TimeRemaining);
-            string header = string.Format(
-                "<size=28><color=#ffaa00>身份投票 - 剩餘 {0}s ({1}/{2} 已投票)</color></size>",
-                remaining, TotalVoters, TotalPlayers);
+            float remainingTime = TimeRemaining;
+            if (remainingTime <= 0f) return;
+
+            int remaining = (int)Math.Ceiling(remainingTime);
+
+            string header = $"<size=28><color=#ffaa00>身份投票 - 剩餘 {remaining}s ({TotalVoters}/{TotalPlayers} 已投票)</color></size>";
 
             string body = "\n<size=22>";
             foreach (var (role, _, displayName) in Roles)
             {
                 _voteCounts.TryGetValue(role, out int count);
-                body += string.Format("<color={0}>{1}: {2} 票</color>\n",
-                    GetRoleColor(role), displayName, count);
+                body += $"<color={GetRoleColor(role)}>{displayName}: {count} 票</color>\n";
             }
             body += "</size>";
-            body += "\n<size=16><color=#cccccc>在控制台輸入 .1 .2 .3 .4 投票</color></size>";
 
-            string fullHint = header + body;
-            float duration = _plugin.Config.VoteHintIntervalSeconds + 0.25f;
+            string instruction = "\n<size=16><color=#cccccc>點鍵盤左上角~開控制臺 輸入 .1 .2 .3 .4 投票</color></size>";
+
+            // 關鍵：大量換行 + 左對齊空格
+            string fullHint =
+                "\n\n\n\n\n\n\n\n\n\n\n" +                    // 往下移（可調整行數）
+                "" + header + "\n" +        // 全形空格往右推（視覺靠左）
+                body +
+                instruction;
 
             foreach (Player player in Player.ReadyList)
             {
-                player.SendHint(fullHint, duration);
+                player.SendHint(fullHint, 1.25f);
             }
         }
 
