@@ -76,6 +76,36 @@ namespace SCPSL_MicroServer_Tweaks
         [Description("How often the vote hint is refreshed, in seconds.")]
         public float VoteHintIntervalSeconds { get; set; } = 1f;
 
+        [Description("Whether timed random events are enabled during rounds.")]
+        public bool EnableRandomEvents { get; set; } = true;
+
+        [Description("Minimum interval between random events, in seconds (180 = 3 minutes).")]
+        public float RandomEventMinIntervalSeconds { get; set; } = 180f;
+
+        [Description("Maximum interval between random events, in seconds (300 = 5 minutes).")]
+        public float RandomEventMaxIntervalSeconds { get; set; } = 300f;
+
+        [Description("Minimum alive players required for random events to trigger.")]
+        public int RandomEventMinPlayers { get; set; } = 1;
+
+        [Description("How long elevators are disabled during the Elevator Malfunction event, in seconds.")]
+        public float RandomEventElevatorLockDuration { get; set; } = 60f;
+
+        [Description("How long humans are invisible and silent during the Stealth event, in seconds.")]
+        public float RandomEventStealthDuration { get; set; } = 30f;
+
+        [Description("How long lights are off during the Blackout event, in seconds (180 = 3 minutes).")]
+        public float RandomEventBlackoutDuration { get; set; } = 180f;
+
+        [Description("Minimum minutes after round start before the Nuke Alert event can trigger.")]
+        public float RandomEventNukeMinMinutes { get; set; } = 10f;
+
+        [Description("Countdown duration for the Nuke Alert event, in seconds.")]
+        public float RandomEventNukeCountdownSeconds { get; set; } = 60f;
+
+        [Description("Chance (0-1) that the nuke alert is a false alarm. 0.5 = 50%.")]
+        public float RandomEventNukeFalseAlarmChance { get; set; } = 0.5f;
+
         public float GetScpFreezeSeconds(int readyPlayerCount)
         {
             float configured;
@@ -157,6 +187,63 @@ namespace SCPSL_MicroServer_Tweaks
                 if (VoteHintIntervalSeconds < 0.1f)
                 {
                     error = "VoteHintIntervalSeconds must be at least 0.1.";
+                    return false;
+                }
+            }
+
+            if (EnableRandomEvents)
+            {
+                if (RandomEventMinIntervalSeconds < 10f)
+                {
+                    error = "RandomEventMinIntervalSeconds must be at least 10.";
+                    return false;
+                }
+
+                if (RandomEventMaxIntervalSeconds < RandomEventMinIntervalSeconds)
+                {
+                    error = "RandomEventMaxIntervalSeconds cannot be less than RandomEventMinIntervalSeconds.";
+                    return false;
+                }
+
+                if (RandomEventMinPlayers < 1)
+                {
+                    error = "RandomEventMinPlayers must be at least 1.";
+                    return false;
+                }
+
+                if (RandomEventElevatorLockDuration < 1f)
+                {
+                    error = "RandomEventElevatorLockDuration must be at least 1.";
+                    return false;
+                }
+
+                if (RandomEventStealthDuration < 1f)
+                {
+                    error = "RandomEventStealthDuration must be at least 1.";
+                    return false;
+                }
+
+                if (RandomEventBlackoutDuration < 1f)
+                {
+                    error = "RandomEventBlackoutDuration must be at least 1.";
+                    return false;
+                }
+
+                if (RandomEventNukeMinMinutes < 0f)
+                {
+                    error = "RandomEventNukeMinMinutes cannot be negative.";
+                    return false;
+                }
+
+                if (RandomEventNukeCountdownSeconds < 10f)
+                {
+                    error = "RandomEventNukeCountdownSeconds must be at least 10.";
+                    return false;
+                }
+
+                if (RandomEventNukeFalseAlarmChance < 0f || RandomEventNukeFalseAlarmChance > 1f)
+                {
+                    error = "RandomEventNukeFalseAlarmChance must be between 0 and 1.";
                     return false;
                 }
             }

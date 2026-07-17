@@ -31,6 +31,13 @@ namespace SCPSL_MicroServer_Tweaks
 
             if (_plugin.Config.EnableRoleVoting)
                 _plugin.VotingController.EndVoting();
+
+            _plugin.RandomEventController.StartEvents();
+        }
+
+        public override void OnServerRoundEnded(RoundEndedEventArgs args)
+        {
+            _plugin.RandomEventController.StopEvents();
         }
 
         public override void OnPlayerChangingRole(PlayerChangingRoleEventArgs args)

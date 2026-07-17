@@ -41,3 +41,27 @@ enable_debug_logging: false
 enable_role_voting: true
 voting_time_seconds: 45
 vote_hint_interval_seconds: 1
+
+# Random Events
+# Timed random events trigger every 3-5 minutes during a round.
+# All events use CASSIE for voice announcements.
+enable_random_events: true
+random_event_min_interval_seconds: 180
+random_event_max_interval_seconds: 300
+random_event_min_players: 1
+
+# Elevator Malfunction: all elevators locked for this many seconds.
+random_event_elevator_lock_duration: 60
+
+# Stealth: humans become invisible and silent for this many seconds.
+random_event_stealth_duration: 30
+
+# Blackout: all facility lights off for this many seconds (180 = 3 minutes).
+random_event_blackout_duration: 180
+
+# Nuke Alert: CASSIE triggers a warhead alarm with this countdown.
+# 50% chance it's a false alarm (auto-cancelled), 50% chance it detonates.
+# Cannot trigger until this many minutes have passed since round start.
+random_event_nuke_min_minutes: 10
+random_event_nuke_countdown_seconds: 60
+random_event_nuke_false_alarm_chance: 0.5
