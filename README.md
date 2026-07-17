@@ -7,6 +7,7 @@
 [![LabAPI](https://img.shields.io/badge/LabAPI-powered-green.svg)](#)
 [![.NET](https://img.shields.io/badge/.NET-Framework%204.8-purple.svg)](#)
 [![License](https://img.shields.io/badge/license-MIT-orange.svg)](#)
+[![Downloads](https://img.shields.io/github/downloads/Neverwin1337/SCPSL-MicroServer-Tweaks/total.svg)](https://github.com/Neverwin1337/SCPSL-MicroServer-Tweaks/releases)
 
 ---
 
@@ -35,9 +36,10 @@ Small servers have a pacing problem:
 
 **30 seconds to try it:**
 
-1. Grab `SCPSL_MicroServer_Tweaks.dll` from [Releases](../../releases)
-2. Drop it into `LabAPI/plugins/global/`
-3. Start your server — you're done 🎉
+1. Install [RueI](https://github.com/pawslee/RueI/releases/latest) (hint framework) — drop `RueI.dll` into `LabAPI/plugins/global/`
+2. Grab `SCPSL_MicroServer_Tweaks.dll` from [Releases](../../releases)
+3. Drop it into `LabAPI/plugins/global/`
+4. Start your server — you're done 🎉
 
 > Want to build from source? See [Build](#-build) below.
 
@@ -98,7 +100,7 @@ Use `mst_event <elevator|doors|stealth|blackout|nuke|scramble>` in RA / console 
 
 ### 🪶 Lightweight & Clean
 
-- **Zero dependencies** — no EXILED, Harmony, MEC, or NWPluginAPI
+- **Minimal dependencies** — only [RueI](https://github.com/pawslee/RueI) for hint display; no EXILED, MEC, or NWPluginAPI
 - References only the DLLs shipped with **your own server**
 - One `.dll`, one `config.yml`, nothing else
 

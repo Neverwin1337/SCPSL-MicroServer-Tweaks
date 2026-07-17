@@ -7,6 +7,7 @@
 [![.NET](https://img.shields.io/badge/.NET-Framework%204.8-purple.svg)](#)
 [![Platform](https://img.shields.io/badge/platform-Windows%20%7C%20Linux%20%7C%20macOS-lightgrey.svg)](#)
 [![License](https://img.shields.io/badge/license-MIT-orange.svg)](#)
+[![Downloads](https://img.shields.io/github/downloads/Neverwin1337/SCPSL-MicroServer-Tweaks/total.svg)](https://github.com/Neverwin1337/SCPSL-MicroServer-Tweaks/releases)
 
 プレイヤー数が少ないサーバーでは、バニラ SCP:SL のゲームバランスが崩壊します——ラウンドが数秒で終わり、SCP が動く前に殺され、増援の波が早すぎたり来なかったりします。**SCPSL-MicroServer-Tweaks** は、4 つの焦点を絞った設定可能な機能で、少人数サーバーの序盤を滑らかにします。**無駄は一切ありません**。
 
@@ -47,7 +48,8 @@
 
 ### ステップ 3 — インストール
 
-`SCPSL_MicroServer_Tweaks.dll` を LabAPI **global** プラグインディレクトリにコピーします:
+- [RueI](https://github.com/pawslee/RueI/releases/latest) — ヒント表示フレームワーク。`RueI.dll` を `LabAPI/plugins/global/` にコピーしてください。
+- `SCPSL_MicroServer_Tweaks.dll` を LabAPI **global** プラグインディレクトリにコピーします:
 
 | OS | パス |
 |----|------|
@@ -110,7 +112,7 @@ team_respawn_queue: 40144443
   - テストコマンド: `mst_event <elevator|doors|stealth|blackout|nuke|scramble>`
 
 - 🪶 **軽量設計**
-  - EXILED、Harmony、MEC、NWPluginAPI には依存しません。
+  - [RueI](https://github.com/pawslee/RueI) のみ依存（ヒント表示用）。EXILED、MEC、NWPluginAPI には依存しません。
   - 位置ロックは Unity のメインスレッドで動作。
   - **自分の現在のサーバー**に付属する DLL のみを参照——古い DLL パックは使いません。
 

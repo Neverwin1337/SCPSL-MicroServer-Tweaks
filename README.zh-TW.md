@@ -7,6 +7,7 @@
 [![LabAPI](https://img.shields.io/badge/LabAPI-powered-green.svg)](#)
 [![.NET](https://img.shields.io/badge/.NET-Framework%204.8-purple.svg)](#)
 [![License](https://img.shields.io/badge/license-MIT-orange.svg)](#)
+[![Downloads](https://img.shields.io/github/downloads/Neverwin1337/SCPSL-MicroServer-Tweaks/total.svg)](https://github.com/Neverwin1337/SCPSL-MicroServer-Tweaks/releases)
 
 ---
 
@@ -35,9 +36,10 @@
 
 **30 秒跑起來：**
 
-1. 下載 `SCPSL_MicroServer_Tweaks.dll` 從 [Releases](../../releases)
-2. 丟進 `LabAPI/plugins/global/` 資料夾
-3. 啟動伺服器，開玩 🎉
+1. 安裝 [RueI](https://github.com/pawslee/RueI/releases/latest)（提示框架）— 將 `RueI.dll` 丟進 `LabAPI/plugins/global/`
+2. 下載 `SCPSL_MicroServer_Tweaks.dll` 從 [Releases](../../releases)
+3. 丟進 `LabAPI/plugins/global/` 資料夾
+4. 啟動伺服器，開玩 🎉
 
 > 想自己編譯？見下方 [Build](#-編譯)
 
@@ -98,7 +100,7 @@ NTF 和 Chaos 開局有幾個波次？**你說了算。**
 
 ### 🪶 輕量無依賴
 
-- **零依賴** — 沒有 EXILED / Harmony / MEC / NWPluginAPI
+- **最低依賴** — 僅需 [RueI](https://github.com/pawslee/RueI) 作為提示顯示框架；無 EXILED / MEC / NWPluginAPI
 - 只引用**你當前伺服器**自帶的 DLL
 - 一個 `.dll` + 一個 `config.yml`，搞定
 

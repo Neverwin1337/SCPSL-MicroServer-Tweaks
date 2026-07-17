@@ -3,12 +3,15 @@ using System.Collections.Generic;
 using CustomPlayerEffects;
 using LabApi.Features.Wrappers;
 using MapGeneration;
+using RueI.API.Elements;
 using UnityEngine;
 
 namespace SCPSL_MicroServer_Tweaks
 {
     public sealed class RandomEventController : MonoBehaviour
     {
+        private static readonly Tag EventHintTag = new Tag("mst_event_hint");
+
         private SCPSL_MicroServer_TweaksPlugin _plugin;
         private bool _running;
         private float _nextEventAt;
@@ -133,7 +136,7 @@ namespace SCPSL_MicroServer_Tweaks
             foreach (Player player in Player.ReadyList)
             {
                 if (player.IsAlive)
-                    player.SendHint(hint, 2f);
+                    HintHelper.ShowToPlayer(player, EventHintTag, hint);
             }
         }
 
@@ -147,6 +150,7 @@ namespace SCPSL_MicroServer_Tweaks
         private void StopActiveHint()
         {
             _activeHintText = null;
+            HintHelper.RemoveFromAll(Player.ReadyList, EventHintTag);
         }
 
         private void TriggerRandomEvent()

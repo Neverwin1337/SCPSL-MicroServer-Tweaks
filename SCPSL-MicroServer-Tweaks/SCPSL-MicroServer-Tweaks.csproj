@@ -29,6 +29,10 @@
       <HintPath>..\Binaries\LabApi.dll</HintPath>
       <Private>false</Private>
     </Reference>
+    <Reference Include="RueI">
+      <HintPath>..\Binaries\RueI.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
     <Reference Include="UnityEngine.CoreModule">
       <HintPath>..\Binaries\UnityEngine.CoreModule.dll</HintPath>
       <Private>false</Private>

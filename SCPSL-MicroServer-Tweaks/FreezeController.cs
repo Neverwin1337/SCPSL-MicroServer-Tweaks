@@ -3,12 +3,16 @@ using System.Collections.Generic;
 using System.Linq;
 using LabApi.Features.Wrappers;
 using PlayerRoles;
+using RueI.API.Elements;
 using UnityEngine;
 
 namespace SCPSL_MicroServer_Tweaks
 {
     public sealed class FreezeController : MonoBehaviour
     {
+        private static readonly Tag FreezeHintTag = new Tag("mst_freeze_hint");
+        private static readonly Tag ReleaseHintTag = new Tag("mst_release_hint");
+
         private readonly Dictionary<Player, Vector3> _anchors = new Dictionary<Player, Vector3>();
 
         private SCPSL_MicroServer_TweaksPlugin _plugin;
@@ -59,6 +63,8 @@ namespace SCPSL_MicroServer_Tweaks
 
             if (_active && showReleaseHint)
                 SendReleaseHint();
+            else
+                HintHelper.RemoveFromAll(GetFrozenPlayers(), FreezeHintTag);
 
             _active = false;
             _anchors.Clear();
@@ -158,7 +164,7 @@ namespace SCPSL_MicroServer_Tweaks
                 if (!IsMovableScp(player) || !Player.ReadyList.Contains(player))
                     continue;
 
-                player.SendHint(text, _plugin.Config.CountdownHintIntervalSeconds + 0.25f);
+                HintHelper.ShowToPlayer(player, FreezeHintTag, text);
             }
         }
 
@@ -171,8 +177,15 @@ namespace SCPSL_MicroServer_Tweaks
                 if (!IsMovableScp(player) || !Player.ReadyList.Contains(player))
                     continue;
 
-                player.SendHint(text, _plugin.Config.ReleaseHintDurationSeconds);
+                HintHelper.ShowToPlayer(player, ReleaseHintTag, text, _plugin.Config.ReleaseHintDurationSeconds);
             }
+
+            HintHelper.RemoveFromAll(GetFrozenPlayers(), FreezeHintTag);
+        }
+
+        private IEnumerable<Player> GetFrozenPlayers()
+        {
+            return _anchors.Keys.ToArray();
         }
 
         private string FormatHint(string template, int seconds)

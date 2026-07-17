@@ -3,12 +3,15 @@ using System.Collections.Generic;
 using System.Linq;
 using LabApi.Features.Wrappers;
 using PlayerRoles;
+using RueI.API.Elements;
 using UnityEngine;
 
 namespace SCPSL_MicroServer_Tweaks
 {
     public sealed class VotingController : MonoBehaviour
     {
+        private static readonly Tag VoteHintTag = new Tag("mst_vote_hint");
+
         internal static readonly (RoleTypeId role, string shortName)[] Roles = {
             (RoleTypeId.Scp049, "SCP"),
             (RoleTypeId.Scientist, "Scientists"),
@@ -113,6 +116,7 @@ namespace SCPSL_MicroServer_Tweaks
         public void EndVoting()
         {
             _active = false;
+            HintHelper.RemoveFromAll(Player.ReadyList, VoteHintTag);
         }
 
         private void Update()
@@ -150,16 +154,11 @@ namespace SCPSL_MicroServer_Tweaks
 
             string instruction = _plugin.Config.VoteHintInstruction;
 
-            // Key: many newlines + left-aligned spacing
-            string fullHint =
-                "\n\n\n\n\n\n\n\n\n\n\n" +                    // Push down (adjustable line count)
-                "" + header + "\n" +        // Left-aligned via full-width spaces
-                body +
-                instruction;
+            string fullHint = header + "\n" + body + instruction;
 
             foreach (Player player in Player.ReadyList)
             {
-                player.SendHint(fullHint, 1.25f);
+                HintHelper.ShowToPlayer(player, VoteHintTag, fullHint, position: 220f);
             }
         }
 

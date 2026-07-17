@@ -7,6 +7,7 @@
 [![.NET](https://img.shields.io/badge/.NET-Framework%204.8-purple.svg)](#)
 [![Platform](https://img.shields.io/badge/platform-Windows%20%7C%20Linux%20%7C%20macOS-lightgrey.svg)](#)
 [![License](https://img.shields.io/badge/license-MIT-orange.svg)](#)
+[![Downloads](https://img.shields.io/github/downloads/Neverwin1337/SCPSL-MicroServer-Tweaks/total.svg)](https://github.com/Neverwin1337/SCPSL-MicroServer-Tweaks/releases)
 
 Cuando un servidor tiene solo unos pocos jugadores, el ritmo de SCP:SL vanilla se rompe: las rondas terminan en segundos, el SCP no tiene tiempo ni de moverse, y las oleadas de refuerzos llegan demasiado pronto o demasiado tarde. **SCPSL-MicroServer-Tweaks** suaviza el inicio de la partida en servidores pequeños con cuatro funciones enfocadas y configurables, y **cero florituras**.
 
@@ -47,7 +48,8 @@ Si solo quieres **ejecutar** el plugin (no compilar desde el código fuente), pu
 
 ### Paso 3 — Instálalo
 
-Copia `SCPSL_MicroServer_Tweaks.dll` en la carpeta de plugins **global** de LabAPI:
+- [RueI](https://github.com/pawslee/RueI/releases/latest) — framework de hints. Copia `RueI.dll` en la carpeta de plugins `global` de LabAPI.
+- Copia `SCPSL_MicroServer_Tweaks.dll` en la carpeta de plugins **global** de LabAPI:
 
 | SO | Ruta |
 |----|------|
@@ -110,7 +112,7 @@ Listo. 🎉 Invita a algunos amigos, observa cómo los SCP permanecen congelados
   - Comando de prueba: `mst_event <elevator|doors|stealth|blackout|nuke|scramble>`
 
 - 🪶 **Diseño ligero**
-  - Sin dependencias de EXILED, Harmony, MEC o NWPluginAPI.
+  - Solo depende de [RueI](https://github.com/pawslee/RueI) para mostrar hints. Sin EXILED, MEC o NWPluginAPI.
   - El bloqueo de posición corre en el hilo principal de Unity.
   - Solo referencia los DLL que vienen con **tu propio servidor actual** — sin paquetes de DLL antiguos.
 

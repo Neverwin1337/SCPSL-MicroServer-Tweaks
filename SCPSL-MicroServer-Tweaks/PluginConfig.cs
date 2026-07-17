@@ -163,6 +163,34 @@ namespace SCPSL_MicroServer_Tweaks
         [Description("Broadcast message for the Scramble event.")]
         public string EventScrambleBroadcast { get; set; } = "空間異常：所有人員隨機傳送";
 
+        [Description("Whether players can open doors/generators/lockers/warhead without equipping a keycard.")]
+        public bool EnableRemoteKeycard { get; set; } = true;
+
+        [Description("Whether RemoteKeycard affects doors.")]
+        public bool RemoteKeycardAffectDoors { get; set; } = true;
+
+        [Description("Whether RemoteKeycard affects generators.")]
+        public bool RemoteKeycardAffectGenerators { get; set; } = true;
+
+        [Description("Whether RemoteKeycard affects the warhead panel.")]
+        public bool RemoteKeycardAffectWarheadPanel { get; set; } = true;
+
+        [Description("Whether RemoteKeycard affects SCP lockers.")]
+        public bool RemoteKeycardAffectScpLockers { get; set; } = true;
+
+        [Description("Whether to show a respawn countdown hint to spectators.")]
+        public bool EnableRespawnHint { get; set; } = true;
+
+        [Description("Respawn hint format. {0}=team name, {1}=seconds remaining.")]
+        public string RespawnHintFormat { get; set; } =
+            "<size=20><color=#aaaaaa>距離 {0} 重生還有 {1} 秒</color></size>";
+
+        [Description("Display name for NTF in the respawn hint.")]
+        public string RespawnHintNtfName { get; set; } = "NTF";
+
+        [Description("Display name for Chaos Insurgency in the respawn hint.")]
+        public string RespawnHintChaosName { get; set; } = "混沌分裂者";
+
         public float GetScpFreezeSeconds(int readyPlayerCount)
         {
             float configured;

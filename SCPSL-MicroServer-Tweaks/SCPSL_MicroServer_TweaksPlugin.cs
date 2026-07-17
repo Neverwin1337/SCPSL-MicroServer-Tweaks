@@ -37,6 +37,7 @@ namespace SCPSL_MicroServer_Tweaks
         internal FreezeController FreezeController { get; private set; }
         internal VotingController VotingController { get; private set; }
         internal RandomEventController RandomEventController { get; private set; }
+        internal RespawnHintController RespawnHintController { get; private set; }
 
         public override void Enable()
         {
@@ -61,6 +62,9 @@ namespace SCPSL_MicroServer_Tweaks
             RandomEventController = _controllerObject.AddComponent<RandomEventController>();
             RandomEventController.Initialize(this);
 
+            RespawnHintController = _controllerObject.AddComponent<RespawnHintController>();
+            RespawnHintController.Initialize(this);
+
             _eventHandlers = new EventHandlers(this);
             CustomHandlersManager.RegisterEventsHandler(_eventHandlers);
 
@@ -78,6 +82,9 @@ namespace SCPSL_MicroServer_Tweaks
             if (RandomEventController != null)
                 RandomEventController.StopEvents();
 
+            if (RespawnHintController != null)
+                RespawnHintController.StopHints();
+
             if (_controllerObject != null)
                 UnityEngine.Object.Destroy(_controllerObject);
 
@@ -85,6 +92,7 @@ namespace SCPSL_MicroServer_Tweaks
             FreezeController = null;
             VotingController = null;
             RandomEventController = null;
+            RespawnHintController = null;
             _controllerObject = null;
             Instance = null;
 

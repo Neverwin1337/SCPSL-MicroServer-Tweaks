@@ -3,7 +3,9 @@ using LabApi.Events.Arguments.ServerEvents;
 using LabApi.Events.CustomHandlers;
 using LabApi.Features.Enums;
 using LabApi.Features.Wrappers;
+using MapGeneration.Distributors;
 using PlayerRoles;
+using Respawning;
 
 namespace SCPSL_MicroServer_Tweaks
 {
@@ -33,11 +35,15 @@ namespace SCPSL_MicroServer_Tweaks
                 _plugin.VotingController.EndVoting();
 
             _plugin.RandomEventController.StartEvents();
+
+            if (_plugin.Config.EnableRespawnHint)
+                _plugin.RespawnHintController.StartHints();
         }
 
         public override void OnServerRoundEnded(RoundEndedEventArgs args)
         {
             _plugin.RandomEventController.StopEvents();
+            _plugin.RespawnHintController.StopHints();
         }
 
         public override void OnPlayerChangingRole(PlayerChangingRoleEventArgs args)
@@ -108,6 +114,89 @@ namespace SCPSL_MicroServer_Tweaks
             {
                 args.IsAllowed = false;
                 player.SendConsoleMessage(string.Format("Voted for {0}!", role.Value), "green");
+            }
+        }
+
+        public override void OnPlayerInteractingDoor(PlayerInteractingDoorEventArgs args)
+        {
+            if (!_plugin.Config.EnableRemoteKeycard || !_plugin.Config.RemoteKeycardAffectDoors)
+                return;
+
+            if (args.Player == null || args.CanOpen || args.IsAllowed)
+                return;
+
+            if (args.Door == null)
+                return;
+
+            try
+            {
+                if (args.Player.HasKeycardPermission(args.Door.Base) && !args.Door.IsLocked)
+                    args.CanOpen = true;
+            }
+            catch (System.Exception e)
+            {
+                _plugin.Debug($"RemoteKeycard door error: {e.Message}");
+            }
+        }
+
+        public override void OnPlayerUnlockingGenerator(PlayerUnlockingGeneratorEventArgs args)
+        {
+            if (!_plugin.Config.EnableRemoteKeycard || !_plugin.Config.RemoteKeycardAffectGenerators)
+                return;
+
+            if (args.Player == null || args.CanOpen || args.IsAllowed)
+                return;
+
+            if (args.Generator == null)
+                return;
+
+            try
+            {
+                if (args.Player.HasKeycardPermission(args.Generator.Base))
+                    args.CanOpen = true;
+            }
+            catch (System.Exception e)
+            {
+                _plugin.Debug($"RemoteKeycard generator error: {e.Message}");
+            }
+        }
+
+        public override void OnPlayerInteractingLocker(PlayerInteractingLockerEventArgs args)
+        {
+            if (!_plugin.Config.EnableRemoteKeycard || !_plugin.Config.RemoteKeycardAffectScpLockers)
+                return;
+
+            if (args.Player == null || args.CanOpen || args.IsAllowed)
+                return;
+
+            try
+            {
+                MapGeneration.Distributors.LockerChamber chamber = args.Chamber?.Base;
+                if (chamber != null && args.Player.HasKeycardPermission(chamber))
+                    args.CanOpen = true;
+            }
+            catch (System.Exception e)
+            {
+                _plugin.Debug($"RemoteKeycard locker error: {e.Message}");
+            }
+        }
+
+        public override void OnPlayerUnlockingWarheadButton(PlayerUnlockingWarheadButtonEventArgs args)
+        {
+            if (!_plugin.Config.EnableRemoteKeycard || !_plugin.Config.RemoteKeycardAffectWarheadPanel)
+                return;
+
+            if (args.Player == null || args.IsAllowed)
+                return;
+
+            try
+            {
+                if (args.Player.HasKeycardPermission(AlphaWarheadActivationPanel.Instance))
+                    args.IsAllowed = true;
+            }
+            catch (System.Exception e)
+            {
+                _plugin.Debug($"RemoteKeycard warhead error: {e.Message}");
             }
         }
     }
