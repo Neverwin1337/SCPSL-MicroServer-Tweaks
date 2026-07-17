@@ -1,9 +1,0 @@
-C:\Users\0810a\OneDrive\桌面\SmallVanillaFlow-LabAPI-14x-source\SmallVanillaFlow\SmallVanillaFlow\obj\Release\net48\SmallVanillaFlow.csproj.AssemblyReference.cache
-C:\Users\0810a\OneDrive\桌面\SmallVanillaFlow-LabAPI-14x-source\SmallVanillaFlow\SmallVanillaFlow\obj\Release\net48\SmallVanillaFlow.GeneratedMSBuildEditorConfig.editorconfig
-C:\Users\0810a\OneDrive\桌面\SmallVanillaFlow-LabAPI-14x-source\SmallVanillaFlow\SmallVanillaFlow\obj\Release\net48\SmallVanillaFlow.AssemblyInfoInputs.cache
-C:\Users\0810a\OneDrive\桌面\SmallVanillaFlow-LabAPI-14x-source\SmallVanillaFlow\SmallVanillaFlow\obj\Release\net48\SmallVanillaFlow.AssemblyInfo.cs
-C:\Users\0810a\OneDrive\桌面\SmallVanillaFlow-LabAPI-14x-source\SmallVanillaFlow\SmallVanillaFlow\obj\Release\net48\SmallVanillaFlow.csproj.CoreCompileInputs.cache
-C:\Users\0810a\OneDrive\桌面\SmallVanillaFlow-LabAPI-14x-source\SmallVanillaFlow\SmallVanillaFlow\bin\Release\net48\SmallVanillaFlow.dll
-C:\Users\0810a\OneDrive\桌面\SmallVanillaFlow-LabAPI-14x-source\SmallVanillaFlow\SmallVanillaFlow\bin\Release\net48\SmallVanillaFlow.pdb
-C:\Users\0810a\OneDrive\桌面\SmallVanillaFlow-LabAPI-14x-source\SmallVanillaFlow\SmallVanillaFlow\obj\Release\net48\SmallVanillaFlow.dll
-C:\Users\0810a\OneDrive\桌面\SmallVanillaFlow-LabAPI-14x-source\SmallVanillaFlow\SmallVanillaFlow\obj\Release\net48\SmallVanillaFlow.pdb
