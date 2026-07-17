@@ -20,17 +20,6 @@
 | 🇯🇵 日本語 | [README.ja.md](./README.ja.md) |
 | 🇪🇸 Español | [README.es.md](./README.es.md) |
 
----
-
-## 👋 The Problem
-
-Small servers have a pacing problem:
-
-> SCPs get insta-killed before they can move. Reinforcements never arrive (or arrive too late). Rounds end before they begin.
-
-**SCPSL-MicroServer-Tweaks** fixes the early game with four focused features. No EXILED, no Harmony, no MEC — just drop the DLL and go.
-
----
 
 ## ⭐ Quick Start
 

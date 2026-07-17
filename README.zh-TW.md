@@ -20,17 +20,6 @@
 | 🇯🇵 日本語 | [README.ja.md](./README.ja.md) |
 | 🇪🇸 Español | [README.es.md](./README.es.md) |
 
----
-
-## 👋 痛點
-
-小服的核心問題：
-
-> SCP 還沒動就被秒了，援軍永遠不來（或者來得太晚），回合還沒開始就結束了。
-
-**SCPSL-MicroServer-Tweaks** 用四個輕量功能解決這個問題。不依賴 EXILED / Harmony / MEC，丟個 DLL 就能用。
-
----
 
 ## ⭐ 快速上手
 
